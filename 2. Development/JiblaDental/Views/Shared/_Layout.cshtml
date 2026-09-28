@@ -1,0 +1,169 @@
+﻿@{
+    var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+    var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+}
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <meta charset="utf-8">
+    @await RenderSectionAsync("seo", false)
+    <link rel="canonical" href="https://www.jibladental.com/" />
+
+    @if (cultureCode == CultureCode.English)
+    {
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.html">
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/images/fav.png">
+        <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/assets/fonts/font/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/uicons-regular-rounded.css">
+        <link rel="stylesheet" type="text/css" href="/assets/fonts/flaticon.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/animate.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/owl.carousel.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/slick.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/odometer.min.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/off-canvas.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/magnific-popup.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/rsmenu-main.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/rs-spacing.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/style2.css">
+        <link rel="stylesheet" type="text/css" href="/style.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/responsive.css">
+    }
+    else
+    {
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.html">
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/images/fav.png">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/fonts/font/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/uicons-regular-rounded.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/fonts/flaticon.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/animate.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/owl.carousel.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/slick.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/odometer.min.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/off-canvas.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/magnific-popup.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/rsmenu-main.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/rs-spacing.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/style2.css">
+        <link rel="stylesheet" type="text/css" href="/ar/style.css">
+        <link rel="stylesheet" type="text/css" href="/ar/assets/css/responsive.css">
+    }
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@Html.Raw("@splidejs")/splide@1.2.0/dist/css/splide.min.css">
+    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z73QC5YXXJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Z73QC5YXXJ');
+    </script>
+    <!-- Meta Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2276832839415149');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+             src="https://www.facebook.com/tr?id=2276832839415149&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Meta Pixel Code -->
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-MCHF697P');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body class="defult-home">
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MCHF697P"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="offwrap"></div>
+
+    <div id="pre-load">
+        <div id="loader" class="loader">
+            <div class="loader-container">
+                <div class="loader-icon"><img src="assets/images/fav.png" alt=""></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+		
+		@await Component.InvokeAsync("Header")
+
+		@RenderBody()
+
+        </div>
+
+	@await Component.InvokeAsync("Footer")
+    
+
+    <div id="scrollUp">
+        <i class="fa fa-angle-up"></i>
+    </div>
+
+    @if (cultureCode == CultureCode.English)
+    {
+        <script src="/assets/js/modernizr-2.8.3.min.js"></script>
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/bootstrap.min.js"></script>
+        <script src="/assets/js/jquery.nav.js"></script>
+        <script src="/assets/js/jquery.malihu.PageScroll2id.min.js"></script>
+        <script src="/assets/js/owl.carousel.min.js"></script>
+        <script src="/assets/js/slick.min.js"></script>
+        <script src="/assets/js/wow.min.js"></script>
+        <script src="/assets/js/imagesloaded.pkgd.min.js"></script>
+        <script src="/assets/js/jquery.appear.min.js"></script>
+        <script src="/assets/js/odometer.min.js"></script>
+        <script src="/assets/js/jquery.magnific-popup.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@Html.Raw("@splidejs")/splide@1.2.0/dist/js/splide.min.js"></script>
+        <script src="/assets/js/main2.js"></script>
+        <script src="/assets/js/main.js"></script>
+        <script src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"></script>
+    }
+    else
+    {
+        <script src="/ar/assets/js/modernizr-2.8.3.min.js"></script>
+        <script src="/ar/assets/js/jquery.min.js"></script>
+        <script src="/ar/assets/js/bootstrap.min.js"></script>
+        <script src="/ar/assets/js/jquery.nav.js"></script>
+        <script src="/ar/assets/js/jquery.malihu.PageScroll2id.min.js"></script>
+        <script src="/ar/assets/js/owl.carousel.min.js"></script>
+        <script src="/ar/assets/js/slick.min.js"></script>
+        <script src="/ar/assets/js/wow.min.js"></script>
+        <script src="/ar/assets/js/imagesloaded.pkgd.min.js"></script>
+        <script src="/ar/assets/js/jquery.appear.min.js"></script>
+        <script src="/ar/assets/js/odometer.min.js"></script>
+        <script src="/ar/assets/js/jquery.magnific-popup.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@Html.Raw("@splidejs")/splide@1.2.0/dist/js/splide.min.js"></script>
+        <script src="/ar/assets/js/main2.js"></script>
+        <script src="/ar/assets/js/main.js"></script>
+        <script src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"></script>
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

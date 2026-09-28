@@ -1,0 +1,129 @@
+﻿@model PageSettingsDto
+@{
+    ViewBag.Title = "Page settings";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("Post", "PageSettings", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="modal-body row">
+                        <input type="hidden" asp-for="@Model.Id">
+                        <input type="hidden" asp-for="@Model.ParentName">
+                        <input type="hidden" asp-for="@Model.Name">
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleEnglish">
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title (Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleArabic" dir="rtl">
+                        </div>
+
+                        @if(Model.Id == 16)
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Url</label>
+                                <input type="text" class="form-control" asp-for="@Model.BannerSubTitle">
+                            </div>
+                        }
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Banner Title (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.BannerTitleEnglish">
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Banner Title (Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.BannerTitleArabic" dir="rtl">
+                        </div>
+
+                        @if (Model.Name != null && (!Model.Name.Equals("index") || !Model.Name.Equals("error")))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Banner image (1920 x 490)</label>
+                                @if (!string.IsNullOrEmpty(Model.BannerImagePath))
+                                {
+                                    <br/>
+                                    <img src="/@Model.BannerImagePath" width="150" alt="image-preview"/>
+                                    <br/>
+                                }
+                                <input type="hidden" asp-for="@Model.BannerImagePath">
+                                <input type="file" class="form-control" asp-for="BannerImage">
+                            </div>
+                        }
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">SEO Title (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.SeoTitleEnglish">
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">SEO Title (Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.SeoTitleArabic" dir="rtl">
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">SEO Description (English)</label>
+                            <textarea class="form-control" asp-for="@Model.SeoDescriptionEnglish"></textarea>
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">SEO Description (Arabic)</label>
+                            <textarea class="form-control" asp-for="@Model.SeoDescriptionArabic" dir="rtl"></textarea>
+                        </div>
+
+                        @*@if (Model.Name != null && (!Model.Name.Equals("index") || !Model.Name.Equals("error")))
+                        {
+                            <div class="mb-3 col-md-12">
+                    <label class="col-form-label">Arabic Banner image (1920 x 600)</label>
+                                @if (!string.IsNullOrEmpty(Model.BannerArabicImagePath))
+                                {
+                                    <br />
+                                    <img src="/@Model.BannerArabicImagePath" width="150" alt="image-preview" />
+                                    <br />
+                                }
+                                <input type="hidden" asp-for="@Model.BannerArabicImagePath">
+                                <input type="file" class="form-control" asp-for="BannerArabicImage">
+                            </div>
+                        }*@
+
+
+                        @if (Model.Name != "result" && Model.Name != "error")
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Priority</label>
+                                <input type="number" min="1" class="form-control" asp-for="@Model.DisplayOrder">
+                            </div>
+                        }
+                        else
+                        {
+                            <input type="hidden" asp-for="@Model.DisplayOrder">
+                        }
+
+                        @*<div class="mb-3 col-md-12">
+                            <label class="form-check-label">Show On Footer</label>
+                            <input asp-for="@Model.ShowOnFooter" type="checkbox" class="form-check-input"/>
+                        </div>*@
+
+                        <div class="mb-3 col-md-12">
+                            <label class="form-check-label">Enabled</label>
+                            <input asp-for="@Model.IsActive" type="checkbox" class="form-check-input"/>
+                        </div>
+
+
+                        <div class="btn-group">
+                            <button type="submit" id="formsubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

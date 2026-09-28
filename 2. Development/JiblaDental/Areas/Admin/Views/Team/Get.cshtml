@@ -1,0 +1,88 @@
+﻿@model TeamViewModel
+@{
+    var department = Model.Department!;
+    var team = Model.Teams!;
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("Post", "Team", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    var Model = department!;
+                    <div class="modal-body row">
+                        <input type="hidden" asp-for="@Model.Id">
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleArabic" dir="rtl">
+                        </div>
+                        @if (Model.Id is > 0)
+                        {
+                            <br />
+
+                            <br />
+
+                            <div class="card-header"><h4 class="card-title">Page settings</h4></div>
+
+                            <div class="mb-3 col-md-12"><label class="col-form-label">Page name(Shown on the URL)</label><input type="text" class="form-control" asp-for="@Model.PageName"></div>
+
+                            <div class="mb-3 col-md-6"><label class="col-form-label">SEO Title (English)</label><input type="text" class="form-control" asp-for="@Model.SeoTitleEnglish"></div>
+
+                            <div class="mb-3 col-md-6"><label class="col-form-label">SEO Title (Arabic)</label><input type="text" class="form-control" asp-for="@Model.SeoTitleArabic"></div>
+
+                            <div class="mb-3 col-md-6"><label class="col-form-label">SEO Description (English)</label><textarea class="form-control" asp-for="@Model.SeoDescriptionEnglish"></textarea></div>
+
+                            <div class="mb-3 col-md-6"><label class="col-form-label">SEO Description (Arabic)</label><textarea class="form-control" asp-for="@Model.SeoDescriptionArabic"></textarea></div>
+
+                            <div class="mb-3 col-md-12"><label class="col-form-label">Display Order</label><input type="number" min="1" class="form-control" asp-for="@Model.DisplayOrder"></div>
+                        }
+                        <div class="mb-3 col-md-12">
+                            <label class="form-check-label">Enabled</label>
+                            <input asp-for="@Model.IsActive" type="checkbox" class="form-check-input" />
+                        </div>
+                        <div class="btn-group">
+                            @if (team.Any())
+                            {
+                                <button disabled asp-action="Delete" asp-route-id="@Model.Id" style="pointer-events: auto" title="Please delete all child entities before attempting to delete this entity." onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">Delete</button>
+                            }
+                            else if (Model.Id > 0)
+                            {
+                                <button asp-action="Delete" asp-route-id="@Model.Id" onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">Delete</button>
+                            }
+                            <button type="submit" id="formsubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@* @if (Model.Department.Id > 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        Doctors
+                    </h4>
+                    <a asp-action="GetContent" asp-route-id="0" asp-route-departmentId="@Model.Department.Id" class="btn btn-primary btn-xs">New</a>
+                </div><div class="card-body">
+                    <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
+                        <thead><tr><th width="40%">Name</th><th width="20%">Status</th><th width="20%">Display Order</th><th width="20%">Action</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.Teams)
+                            {
+                                <tr><td>@Html.Raw(item.NameEnglish)</td><td>@Html.Raw(item.IsActive ? "Enabled" : "Disabled")</td><td>@Html.Raw(item.DisplayOrder)</td><td><a asp-action="GetContent" asp-route-id="@item.Id" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a></td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+} *@

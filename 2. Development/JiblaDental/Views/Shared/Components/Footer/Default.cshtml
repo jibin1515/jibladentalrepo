@@ -1,0 +1,139 @@
+@model FooterViewModel
+@{
+    var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+    var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+    var pages = Model.Pages!;
+    var socialmedia = Model.SocialMedia!;
+    var contact = Model.Contact!;
+}
+
+<footer class="cs_footer cs_blue_bg cs_bg_filed cs_white_color" data-src="/assets/images/footer-map.png">
+    <div class="container">
+        <div class="cs_footer_row">
+            <div class="cs_footer_col">
+                <div class="cs_footer_highlight_col cs_accent_bg">
+                    <div class="cs_footer_logo">
+                        <img src="/assets/images/white-logo.png" alt="Logo">
+                    </div>
+                    @{
+                        var mapUrl = !string.IsNullOrEmpty(contact.GoogleMapLink) 
+                            ? contact.GoogleMapLink 
+                            : "https://www.google.com/maps/place/Jibla+Dental+Center/@29.3615613,47.9663589,21z/data=!4m6!3m5!1s0x3fcf857cccafdb91:0x1335cbd64b39c67b!8m2!3d29.3614915!4d47.9663954!16s%2Fg%2F11rsfbt_rz?entry=ttu&g_ep=EgoyMDI2MDkyMC4wIKXMDSoASAFQAw%3D%3D";
+                    }
+                    <ul class="cs_footer_contact cs_mp_0">
+                        <li>
+                            <a href="@mapUrl" target="_blank">
+                                <i class="fa-solid fa-location-dot"></i>
+                                @Html.Raw(cultureCode == CultureCode.English ? contact.AddressEnglish : contact.AddressArabic)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:@Html.Raw(contact.Phone1)"><i class="fa-solid fa-phone"></i> @Html.Raw(contact.Phone1)</a>
+                        </li>
+                        <li>
+                            <a href="mailto:@Html.Raw(contact.Email1)"><i class="fa-solid fa-envelope"></i> @Html.Raw(contact.Email1) </a>
+                        </li>
+                        <li class="padleft">
+                            <a class="readon details" href="@mapUrl" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? "See Location On Map" : "انظر الموقع على الخريطة")</a>
+                        </li>
+                    </ul>
+                    <div class="cs_social_btns cs_style_1">
+                        @foreach (var item in socialmedia)
+                        {
+                            <a href="@item.Url" target="_blank" class="cs_center"><i class="fa-brands fa-@Html.Raw(item.Name)"></i></a>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="cs_footer_col addnewclass order-2">
+                <div class="cs_footer_widget">
+                    <h2 class="cs_footer_widget_title">@Html.Raw(cultureCode == CultureCode.English ? contact.FooterHeading2English : contact.FooterHeading2Arabic)</h2>
+                    <ul class="cs_footer_widget_nav_list cs_mp_0">
+                        @foreach (var page in pages)
+                        {
+                            @switch (page.Name)
+                            {
+                                case "index":
+                                case "privacy-policy":
+                                case "faq":
+                                case "news":
+                                case "insurance":
+                                case "video-hub":
+                                case "careers":
+                                case "result":
+                                case "error":
+                                case "appointment":
+                                    break;
+
+                                default:
+                                    <li><a href="@Html.Raw("/" + page.Name)">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
+                                    break;
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="cs_footer_col addnewclass order-3">
+                <div class="cs_footer_widget">
+                    <h2 class="cs_footer_widget_title">@Html.Raw(cultureCode == CultureCode.English ? contact.FooterHeading3English : contact.FooterHeading3Arabic)</h2>
+                    <ul class="cs_footer_widget_nav_list cs_mp_0">
+                        @foreach (var page in pages)
+                        {
+                            @switch (page.Name)
+                            {
+                                case "index":
+                                case "our-center":
+                                case "services":
+                                case "team":
+                                case "partners":
+                                case "loyalty-program":
+                                case "contact":
+                                case "result":
+                                case "error":
+                                case "appointment":
+                                    break;
+
+                                default:
+                                    <li><a href="@Html.Raw("/" + page.Name)">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
+                                    break;
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="cs_footer_col addnewclass2 order-1">
+                <div class="cs_footer_widget">
+                    <h2 class="cs_footer_widget_title">@Html.Raw(cultureCode == CultureCode.English ? contact.FooterHeading1English : contact.FooterHeading1Arabic)</h2>
+                    <ul class="cs_footer_widget_nav_list cs_mp_0">
+                        <li><a>@Html.Raw(cultureCode == CultureCode.English ? contact.FooterTimingLabel1English : contact.FooterTimingLabel1Arabic)</a></li>
+                        <li><a>@Html.Raw(cultureCode == CultureCode.English ? contact.FooterTimingLabel2English : contact.FooterTimingLabel2Arabic)</a></li>
+                        <li><a>@Html.Raw(cultureCode == CultureCode.English ? contact.FooterTimingLabel3English : contact.FooterTimingLabel3Arabic)</a></li>
+                        <li><a>@Html.Raw(cultureCode == CultureCode.English ? contact.FooterTimingLabel4English : contact.FooterTimingLabel4Arabic)</a></li>
+                    </ul>
+                    <div class="textwidget mt-20">
+                        @if(!string.IsNullOrEmpty(contact.Certificate1ImagePath))
+                        {
+                            <img src="@Html.Raw("/" + contact.Certificate1ImagePath)" alt="@contact.Certificate1ImageAlt">
+                        }
+                        @if (!string.IsNullOrEmpty(contact.Certificate2ImagePath))
+                        {
+                            <img src="@Html.Raw("/" + contact.Certificate2ImagePath)" alt="@contact.Certificate2ImageAlt">
+                        }
+                        @if (!string.IsNullOrEmpty(contact.Certificate3ImagePath))
+                        {
+                            <img src="@Html.Raw("/" + contact.Certificate3ImagePath)" alt="@contact.Certificate3ImageAlt">
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="cs_footer_bottom cs_primary_bg">
+        <div class="container">
+            <div class="cs_footer_bottom_in text-center">
+                <p class="cs_footer_copyright m-auto mb-0">© @DateTime.UtcNow.Year Jibla Dental Center. Designed By Uniweb IT Solutions</p>
+            </div>
+        </div>
+    </div>
+</footer>

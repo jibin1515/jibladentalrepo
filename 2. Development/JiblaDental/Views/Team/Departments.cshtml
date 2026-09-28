@@ -1,0 +1,97 @@
+﻿@model HomeViewModel
+
+@{
+	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+	var cultureIsArabic = cultureCode == CultureCode.Arabic;
+	var pageSettings = Model.Pages!.First(x => x.Name == "team");
+}
+
+@section seo {
+	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+}
+
+<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
+	<div class="container">
+		<div class="breadcrumbs-inner">
+			<h1 class="page-title">
+				@Html.Raw(cultureIsArabic ? pageSettings.BannerTitleArabic : pageSettings.BannerTitleEnglish)
+			</h1>
+		</div>
+	</div>
+</div>
+
+<div class="rs-team rs-inner-blog team-style3 pt-120 pb-120 md-pt-80 md-pb-80">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-12 displaynone1">
+				<div class="widget-area">
+					<div class="search-widget mb-50">
+						<div class="search-wrap">
+							@using (Html.BeginForm("Search", "Team", FormMethod.Post, new { enctype = "multipart/form-data", @class = "" }))
+							{
+								<input type="search" placeholder="@Html.Raw(cultureIsArabic ? "جارٍ البحث..." : "Searching...")" name="NameEnglish" class="search-input">
+								<button type="submit" value="Search"><i class="flaticon-search"></i></button>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-8 md-mb-50">
+				<div class="row">
+					@foreach (var item in Model.Teams)
+					{
+						<div class="col-lg-6 col-md-6 mb-30">
+							<div class="team-item">
+								<div class="team-inner-wrap">
+									<div class="image-wrap">
+										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt"></a>
+									</div>
+									<div class="team-content">
+										<h3 class="team-name"><a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></h3>
+										<ul class="social-icon">
+											<li>
+												<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+
+				</div>
+			</div>
+
+
+			<div class="col-lg-4 col-md-12 pl-25 md-pl-15">
+				<div class="widget-area">
+					<div class="search-widget mb-50 displaynone2">
+						<div class="search-wrap">
+							@using (Html.BeginForm("Search", "Team", FormMethod.Post, new { enctype = "multipart/form-data", @class = "" }))
+							{
+								<input type="search" placeholder="@Html.Raw(cultureIsArabic ? "جارٍ البحث..." : "Searching...")" name="NameEnglish" class="search-input">
+								<button type="submit" value="Search"><i class="flaticon-search"></i></button>
+							}
+						</div>
+					</div>
+
+					<div class="categories mb-50">
+						<div class="widget-title mb-15">
+							<h3 class="title">@Html.Raw(cultureIsArabic ? "منطقة الطبيب" : "Doctor's Area")</h3>
+						</div>
+						<ul>
+							@foreach (var item in Model.Departments)
+							{
+								<li><a asp-action="Departments" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</a></li>
+							}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,204 @@
+﻿@model ContactDto
+
+@section Title {
+Contact Management
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("Post", "Contact", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="modal-body row">
+                        <input type="hidden" asp-for="@Model.Id">
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title (Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Address (English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.AddressEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Address (Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.AddressArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Email 1</label>
+                            <input type="text" class="form-control" asp-for="@Model.Email1">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Email 2</label>
+                            <input type="text" class="form-control" asp-for="@Model.Email2">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Phone 1</label>
+                            <input type="text" class="form-control" asp-for="@Model.Phone1">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Phone 2</label>
+                            <input type="text" class="form-control" asp-for="@Model.Phone2">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Form Title (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FormTitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Form Title (Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FormTitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Google Map Link</label>
+                            <textarea class="form-control" asp-for="@Model.GoogleMapLink"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Timing 1(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterTimingLabel1English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Timing 1(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterTimingLabel1Arabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Timing 2(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterTimingLabel2English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Timing 2(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterTimingLabel2Arabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Timing 3(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterTimingLabel3English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Timing 3(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterTimingLabel3Arabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Timing 4(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterTimingLabel4English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Timing 4(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterTimingLabel4Arabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Header Email</label>
+                            <input type="text" class="form-control" asp-for="@Model.HeaderEmail">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Header Phone</label>
+                            <input type="text" class="form-control" asp-for="@Model.HeaderPhone">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Appointment Label(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.AppointmentLabelEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Appointment Label(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.AppointmentLabelArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Appointment Image (600 x 620)</label>
+                            @if (!string.IsNullOrEmpty(Model.AppointmentImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.AppointmentImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.AppointmentImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.AppointmentImage">
+                            <label class="col-form-label">Appointment Image Alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.AppointmentImageAlt">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Appointment Phone</label>
+                            <input type="text" class="form-control" asp-for="@Model.AppointmentPhone">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Certificate 1 Image (117 x 117)</label>
+                            @if (!string.IsNullOrEmpty(Model.Certificate1ImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.Certificate1ImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.Certificate1ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Certificate1Image">
+                            <label class="col-form-label">Certificate 1 Image Alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.Certificate1ImageAlt">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Certificate 2 Image (117 x 117)</label>
+                            @if (!string.IsNullOrEmpty(Model.Certificate2ImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.Certificate2ImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.Certificate2ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Certificate2Image">
+                            <label class="col-form-label">Certificate 2 Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.Certificate2ImageAlt">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Certificate 3 Image (117 x 117)</label>
+                            @if (!string.IsNullOrEmpty(Model.Certificate3ImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.Certificate3ImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.Certificate3ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Certificate3Image">
+                            <label class="col-form-label">Certificate 3 Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.Certificate3ImageAlt">
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Menu Heading 1 (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterHeading1English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Menu Heading 1 (Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterHeading1Arabic" dir="rtl">
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Menu Heading 2 (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterHeading2English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Menu Heading 2 (Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterHeading2Arabic" dir="rtl">
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Menu Heading 3 (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterHeading3English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Footer Menu Heading 3 (Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.FooterHeading3Arabic" dir="rtl">
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="form-check-label">Arabic Enabled?</label>
+                            <input asp-for="@Model.IsArabicEnabled" type="checkbox" class="form-check-input" />
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" id="formsubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

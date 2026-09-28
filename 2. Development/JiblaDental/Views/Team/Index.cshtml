@@ -1,0 +1,440 @@
+﻿@model HomeViewModel
+
+@{
+	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+	var cultureIsArabic = cultureCode == CultureCode.Arabic;
+	var pageSettings = Model.Pages!.First(x => x.Name == "team");
+}
+
+@if(Model.IsDetails)
+{
+	
+	@section seo {
+	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+	}
+
+	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
+		<div class="container">
+			<div class="breadcrumbs-inner">
+				<h1 class="page-title">
+					@Html.Raw(cultureIsArabic ? pageSettings.BannerTitleArabic : pageSettings.BannerTitleEnglish)
+				</h1>
+			</div>
+		</div>
+	</div>
+
+	<div class="rs-team-single pt-120 pb-20 md-pt-80 md-pb-30">
+		<div class="container">
+			<div class="btm-info-team pb-20">
+				<div class="row align-items-center">
+					@if(!string.IsNullOrEmpty(Model.Team.ImagePath))
+					{
+					<div class="col-lg-5 md-mb-50">
+						<div class="images-part">
+							<img src="@Html.Raw("/" + Model.Team.ImagePath)" alt="@Model.Team.ImageAlt">
+						</div>
+					</div>
+					}
+					<div class="col-lg-7">
+						<div class="con-info">
+							<span class="designation-info">@Html.Raw(cultureIsArabic ? Model.Department.TitleArabic : Model.Department.TitleEnglish)</span>
+							<h2 class="title">@Html.Raw(cultureIsArabic ? Model.Team.NameArabic : Model.Team.NameEnglish)</h2>
+							<div class="short-desc">
+								@Html.Raw(cultureIsArabic ? Model.Team.BodyArabic : Model.Team.BodyEnglish)
+							</div>
+							<div class="ps-informations">
+								<ul class="social-info">
+									@foreach(var item in Model.TeamContent.Where(x => x.Type == "social"))
+									{
+									<li><a href="@item.Url" target="_blank"><i class="fab fa-@item.Name.ToLower()"></i></a></li>
+									}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<div class="rs-team rs-inner-blog team-style3 pb-120 md-pt-10 md-pb-80">
+		<div class="container">
+
+			<div class="row">
+				<div class="col-lg-8 md-mb-50">
+
+					<!-- Team Start -->
+					<div class="rs-team-single rs-services services-main-home pb-40">
+						@if (Model.TeamContent.Where(x => x.Type == "service").Count() > 0)
+						{
+						<div class="btm-info-team bg-no1">
+							<div class="row align-items-center">
+								<h3>@Html.Raw(cultureIsArabic ? "خدمات" : "Services")</h3>
+								@foreach (var item in Model.TeamContent.Where(x => x.Type == "service"))
+								{
+								<div class="col-lg-12 col-md-12 mb-20">
+									<div class="services-item">
+										<div class="services-wrap">
+											<div class="services-content">
+													<h3 class="title"><a>@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</a></h3>
+													<p class="services-txt">@Html.Raw(cultureIsArabic ? item.BodyArabic : item.BodyEnglish)</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								}
+							</div>
+						</div>
+						}
+
+						@if (Model.TeamContent.Where(x => x.Type == "qualification").Count() > 0)
+						{
+						<div class="rs-checkout padddd">
+							<div class="full-grid mt-0">
+								<div class="ordered-product">
+									<div class="checkout-title">
+										<h3>@Html.Raw(cultureIsArabic ? "المؤهلات" : "Qualifications")</h3>
+									</div>
+
+
+
+
+									<!-- Services Section Start -->
+									<div class="rs-services services-style1 services-modify1">
+
+										<div class="row justify-content-center">
+
+											<div class="col-lg-12">
+												<ul class="check-lists">
+													@foreach (var item in Model.TeamContent.Where(x => x.Type == "qualification"))
+													{
+														<li>@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</li>
+													}
+												</ul>
+											</div>
+
+
+										</div>
+
+									</div>
+									<!-- Services Section End -->
+
+
+								</div>
+
+
+							</div>
+						</div>
+						}
+						@if (Model.TeamContent.Where(x => x.Type == "gallery").Count() > 0)
+						{
+						<section class="photo-gallery mt-20">
+							<div class="checkout-title">
+								<h3>@Html.Raw(cultureIsArabic ? "معرض العلاج" : "Treatment Gallery")</h3>
+							</div>
+							<div class="container">
+								<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 gallery-grid">
+									@foreach (var item in Model.TeamContent.Where(x => x.Type == "gallery"))
+									{
+									<div class="col">
+											<a class="gallery-item" href="@Html.Raw("/" + item.ImagePath)">
+											<img src="@Html.Raw("/" + item.ImagePath)" class="img-fluid" alt="@item.ImageAlt">
+										</a>
+									</div>
+									}
+
+								</div>
+							</div>
+						</section>
+						}
+
+
+
+					</div>
+					<!-- Team End -->
+
+				</div>
+
+
+				<div class="col-lg-4 col-md-12 pl-25 md-pl-15">
+					<div class="widget-area">
+						<div class="categories mb-50">
+							<div class="widget-title mb-15">
+								<h3 class="title">@Html.Raw(cultureIsArabic ? Model.Department.TitleArabic : Model.Department.TitleEnglish)</h3>
+							</div>
+							<ul>
+								@foreach (var item in Model.Teams)
+								{
+									<li><a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></li>
+								}
+							</ul>
+						</div>
+
+					</div>
+				</div>
+
+
+
+			</div>
+
+
+
+		</div>
+	</div>
+
+	<div class="modal fade lightbox-modal" id="lightbox-modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-fullscreen">
+			<div class="modal-content">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="modal-body">
+					<div class="lightbox-content">
+						<!-- JS content here -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@section Scripts {
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+	<script>
+
+					const html = document.querySelector('html');
+		html.setAttribute('data-bs-theme', 'dark');
+
+		document.addEventListener('DOMContentLoaded', () => {
+		  // --- Create LightBox
+		  const galleryGrid = document.querySelector(".gallery-grid");
+		  const links = galleryGrid.querySelectorAll("a");
+		  const imgs = galleryGrid.querySelectorAll("img");
+		  const lightboxModal = document.getElementById("lightbox-modal");
+		  const bsModal = new bootstrap.Modal(lightboxModal);
+		  const modalBody = lightboxModal.querySelector(".lightbox-content");
+
+		  function createCaption (caption) {
+			return `<div class="carousel-caption d-none d-md-block">
+				<h4 class="m-0">${caption}</h4>
+			  </div>`;
+		  }
+
+		  function createIndicators (img) {
+			let markup = "", i, len;
+
+			const countSlides = links.length;
+			const parentCol = img.closest('.col');
+			const curIndex = [...parentCol.parentElement.children].indexOf(parentCol);
+
+			for (i = 0, len = countSlides; i < len; i++) {
+			  markup += `
+				<button type="button" data-bs-target="#lightboxCarousel"
+				  data-bs-slide-to="${i}"
+				  ${i === curIndex ? 'class="active" aria-current="true"' : ''}
+				  aria-label="Slide ${i + 1}">
+				</button>`;
+			}
+
+			return markup;
+		  }
+
+		  function createSlides (img) {
+			let markup = "";
+			const currentImgSrc = img.closest('.gallery-item').getAttribute("href");
+
+			for (const img of imgs) {
+			  const imgSrc = img.closest('.gallery-item').getAttribute("href");
+			  const imgAlt = img.getAttribute("alt");
+
+			  markup += `
+				<div class="carousel-item${currentImgSrc === imgSrc ? " active" : ""}">
+				  <img class="d-block img-fluid w-100" src=${imgSrc} alt="${imgAlt}">
+				  ${imgAlt ? createCaption(imgAlt) : ""}
+				</div>`;
+			}
+
+			return markup;
+		  }
+
+		  function createCarousel (img) {
+			const markup = `
+			  <!-- Lightbox Carousel -->
+			  <div id="lightboxCarousel" class="carousel slide carousel-fade" data-bs-ride="true">
+				<!-- Indicators/dots -->
+				<div class="carousel-indicators">
+				  ${createIndicators(img)}
+				</div>
+				<!-- Wrapper for Slides -->
+				<div class="carousel-inner justify-content-center mx-auto">
+				  ${createSlides(img)}
+				</div>
+				<!-- Controls/icons -->
+				<button class="carousel-control-prev" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="prev">
+				  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				  <span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="next">
+				  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+				  <span class="visually-hidden">Next</span>
+				</button>
+			  </div>
+			  `;
+
+			modalBody.innerHTML = markup;
+		  }
+
+		  for (const link of links) {
+			link.addEventListener("click", function (e) {
+			  e.preventDefault();
+			  const currentImg = link.querySelector("img");
+			  const lightboxCarousel = document.getElementById("lightboxCarousel");
+
+			  if (lightboxCarousel) {
+				const parentCol = link.closest('.col');
+				const index = [...parentCol.parentElement.children].indexOf(parentCol);
+
+				const bsCarousel = new bootstrap.Carousel(lightboxCarousel);
+				bsCarousel.to(index);
+			  } else {
+				createCarousel(currentImg);
+			  }
+
+			  bsModal.show();
+			});
+		  }
+
+		  // --- Support Fullscreen
+		  const fsEnlarge = document.querySelector(".btn-fullscreen-enlarge");
+		  const fsExit = document.querySelector(".btn-fullscreen-exit");
+
+		  function enterFS () {
+			lightboxModal.requestFullscreen().then({}).catch(err => {
+			  alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+			});
+			fsEnlarge.classList.toggle("d-none");
+			fsExit.classList.toggle("d-none");
+		  }
+
+		  function exitFS () {
+			document.exitFullscreen();
+			fsExit.classList.toggle("d-none");
+			fsEnlarge.classList.toggle("d-none");
+		  }
+
+		  fsEnlarge.addEventListener("click", (e) => {
+			e.preventDefault();
+			enterFS();
+		  });
+
+		  fsExit.addEventListener("click", (e) => {
+			e.preventDefault();
+			exitFS();
+		  });
+		})
+
+
+	</script>
+	}
+
+}
+else
+{
+
+@section seo {
+	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+}
+
+<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
+	<div class="container">
+		<div class="breadcrumbs-inner">
+			<h1 class="page-title">
+				@Html.Raw(cultureIsArabic ? pageSettings.BannerTitleArabic : pageSettings.BannerTitleEnglish)
+			</h1>
+		</div>
+	</div>
+</div>
+
+<div class="rs-team rs-inner-blog team-style3 pt-120 pb-120 md-pt-80 md-pb-80">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-12 displaynone1">
+				<div class="widget-area">
+					<div class="search-widget mb-50">
+						<div class="search-wrap">
+								@using (Html.BeginForm("Search", "Team", FormMethod.Post, new { enctype = "multipart/form-data", @class = "" }))
+                        {
+									<input type="search" placeholder="@Html.Raw(cultureIsArabic ? "جارٍ البحث..." : "Searching...")" name="NameEnglish" class="search-input">
+							<button type="submit" value="Search"><i class="flaticon-search"></i></button>
+						}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-8 md-mb-50">
+				<div class="row">
+					@foreach(var item in Model.Teams)
+					{
+					<div class="col-lg-6 col-md-6 mb-30">
+						<div class="team-item">
+							<div class="team-inner-wrap">
+								<div class="image-wrap">
+										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt"></a>
+								</div>
+								<div class="team-content">
+											<h3 class="team-name"><a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></h3>
+									<ul class="social-icon">
+										<li>
+													<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					}
+
+				</div>
+			</div>
+
+
+			<div class="col-lg-4 col-md-12 pl-25 md-pl-15">
+				<div class="widget-area">
+					<div class="search-widget mb-50 displaynone2">
+						<div class="search-wrap">
+								@using (Html.BeginForm("Search", "Team", FormMethod.Post, new { enctype = "multipart/form-data", @class = "" }))
+								{
+									<input type="search" placeholder="@Html.Raw(cultureIsArabic ? "جارٍ البحث..." : "Searching...")" name="NameEnglish" class="search-input">
+							<button type="submit" value="Search"><i class="flaticon-search"></i></button>
+							}
+						</div>
+					</div>
+
+					<div class="categories mb-50">
+						<div class="widget-title mb-15">
+							<h3 class="title">@Html.Raw(cultureIsArabic ? "منطقة الطبيب" : "Doctor's Area")</h3>
+						</div>
+						<ul>
+							@foreach (var item in Model.Departments)
+							{
+									<li><a asp-action="Departments" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</a></li>
+							}
+						</ul>
+					</div>
+
+				</div>
+			</div>
+
+
+
+		</div>
+
+
+
+	</div>
+</div>
+}

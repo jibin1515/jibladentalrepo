@@ -1,0 +1,68 @@
+﻿@model TestimonialDto
+@section Title {
+    <a asp-action="GetSection" class="btn btn-primary btn-xs">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    Entry
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("PostTestimonial", "About", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="modal-body row">
+                        <input type="hidden" asp-for="@Model.Id">
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Name(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.NameEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Name(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.NameArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Message(English)</label>
+                            <textarea class="form-control" cols="20" rows="3" asp-for="@Model.MessageEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Message(Arabic)</label>
+                            <textarea class="form-control" cols="20" rows="3" asp-for="@Model.MessageArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Image (150 x 150)</label>
+                            @if (!string.IsNullOrEmpty(Model.ImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.ImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Image">
+                            <label class="col-form-label">Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.ImageAlt">
+                        </div>
+                        @if (Model.Id is > 0)
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Display Order</label>
+                                <input type="number" min="1" class="form-control" asp-for="@Model.DisplayOrder">
+                            </div>
+                        }
+                        <div class="mb-3 col-md-12">
+                            <label class="form-check-label">Enabled</label>
+                            <input asp-for="@Model.IsActive" type="checkbox" class="form-check-input" />
+                        </div>
+                        <div class="btn-group">
+                            @if (Model.Id is > 0)
+                            {
+                                <button asp-action="DeleteTestimonial" asp-route-id="@Model.Id" onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">Delete</button>
+                            }
+                            <button type="submit" id="formsubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,113 @@
+﻿@model EnquiryViewModel
+@{
+    ViewBag.Title = "Enquiry";
+
+    var enquiry = Model.Enquiry!;
+}
+
+@section Title
+{
+    <a asp-action="GetAll" asp-route-type="@enquiry.Purpose" asp- class="btn btn-primary btn-xs">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    Enquiry
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("PostEmail", "Enquiry", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    // ReSharper disable once LocalVariableHidesMember InconsistentNaming
+                    <div class="modal-body row">
+
+                        @if (Model.Career != null)
+                        {
+                            <div class="mb-3 col-md-12">
+                                <a asp-controller="Career" asp-action="Get" asp-route-id="@Model.Career.Id">
+                                    <label class="col-form-label">Post Applied</label>
+                                    <input type="text" class="form-control" asp-for="@Model.Career.TitleEnglish" readonly>
+                                </a>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(enquiry.Name))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Name</label>
+                                <input type="text" class="form-control" asp-for="@enquiry.Name" readonly>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(enquiry.FirstName))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">First Name</label>
+                                <input type="text" class="form-control" asp-for="@enquiry.FirstName" readonly>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(enquiry.LastName))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Last Name</label>
+                                <input type="text" class="form-control" asp-for="@enquiry.LastName" readonly>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(enquiry.Email))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Email</label>
+                                <input type="text" class="form-control" asp-for="@enquiry.Email" readonly>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(enquiry.Phone))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Phone</label>
+                                <input type="text" class="form-control" asp-for="@enquiry.Phone" readonly>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(enquiry.Subject))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Subject</label>
+                                <input type="text" class="form-control" asp-for="@enquiry.Subject" readonly>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(enquiry.Message))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Message</label>
+                                <textarea class="form-control" asp-for="@enquiry.Message" readonly></textarea>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(enquiry.AttachedFilePath))
+                        {
+                            <div class="mb-3 col-md-12">
+                                <a href="@Html.Raw("/" + enquiry.AttachedFilePath)" target="_blank">
+                                    Attached File
+                                </a>
+                            </div>
+                        }
+
+
+                        <div class="btn-group">
+                            <button asp-action="Delete" asp-route-id="@enquiry.Id"
+                                    onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

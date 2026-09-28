@@ -1,0 +1,407 @@
+﻿@model AboutViewModel
+@{
+    var section = Model.Section;
+}
+@section Title
+{
+        About management
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("PostSection", "About", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    var Model = section!;
+                    <div class="modal-body row">
+
+                        <br />
+                        <div class="card-header"><h4 class="card-title">CEO Section</h4></div>
+                        <br />
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">CEO Tagline(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.CEOTaglineEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">CEO Tagline(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.CEOTaglineArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">CEO Name(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.CEONameEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">CEO Name(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.CEONameArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">CEO Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.CEOBodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">CEO Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.CEOBodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">CEO Image (600 x 720)</label>
+                            @if (!string.IsNullOrEmpty(Model.CEOImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.CEOImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.CEOImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.CEOImage">
+                            <label class="col-form-label">CEO Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.CEOImageAlt">
+                        </div>
+                        <br />
+                        <div class="card-header"><h4 class="card-title">About Section</h4></div>
+                        <br />
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Tagline(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TaglineEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Tagline(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TaglineArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.BodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.BodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Image (571 x 669)</label>
+                            @if (!string.IsNullOrEmpty(Model.ImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.ImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Image">
+                            <label class="col-form-label">Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.ImageAlt">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Video</label>
+                            @if (!string.IsNullOrEmpty(Model.VideoPath))
+                            {
+                                <br />
+                                <a href="/@Model.VideoPath" target="_blank">View</a>
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.VideoPath">
+                            <input type="file" class="form-control" asp-for="@Model.Video">
+                        </div>
+                        <br />
+                        <div class="card-header"><h4 class="card-title">Vision Mission Section</h4></div>
+                        <br />
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Mission Heading(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.VisionMissionHeadingEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Mission Heading(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.VisionMissionHeadingArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Mission Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.VisionMissionBodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Mission Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.VisionMissionBodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Mission Image (642 x 665)</label>
+                            @if (!string.IsNullOrEmpty(Model.VisionMissionImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.VisionMissionImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.VisionMissionImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.VisionMissionImage">
+                            <label class="col-form-label">Vision Mission Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.VisionMissionImageAlt">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.VisionTitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.VisionTitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.VisionBodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Vision Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.VisionBodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Mission Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.MissionTitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Mission Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.MissionTitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Mission Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.MissionBodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Mission Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.MissionBodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Values Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.ValuesTitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Values Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.ValuesTitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Values Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.ValuesBodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Values Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.ValuesBodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <br />
+                        <div class="card-header"><h4 class="card-title">Testimonial Section</h4></div>
+                        <br />
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Testimonial Tagline(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TestimonialTaglineEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Testimonial Tagline(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TestimonialTaglineArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Testimonial Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TestimonialTitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Testimonial Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TestimonialTitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Testimonial Image (1920 x 960)</label>
+                            @if (!string.IsNullOrEmpty(Model.TestimonialImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.TestimonialImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.TestimonialImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.TestimonialImage">
+                        </div>
+                        <br />
+                        <div class="card-header"><h4 class="card-title">Home Content Section</h4></div>
+                        <br />
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Home Tagline(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.HomeTaglineEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Home Tagline(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.HomeTaglineArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Home Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.HomeTitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Home Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.HomeTitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Home Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.HomeBodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Home Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.HomeBodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Home Image (571 x 607)</label>
+                            @if (!string.IsNullOrEmpty(Model.HomeImagePath))
+                            {
+                                <br />
+
+                                <img src="/@Model.HomeImagePath" width="150" alt="image-preview" />
+
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.HomeImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.HomeImage">
+                            <label class="col-form-label">Home Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.HomeImageAlt">
+                        </div>
+                        <br />
+                        <div class="card-header"><h4 class="card-title">Home Count Content Section</h4></div>
+                        <br />
+                        <div class="mb-3 col-md-6">
+                            <label class="col-form-label">Count 1</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count1">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="col-form-label">Count 1 Symbol</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count1Symbol">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Label 1(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.Label1English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Label 1(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.Label1Arabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Count 1 Image (200 x 200)</label>
+                            @if (!string.IsNullOrEmpty(Model.Count1ImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.Count1ImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.Count1ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Count1Image">
+                            <label class="col-form-label">Count 1 Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count1ImageAlt">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="col-form-label">Count 2</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count2">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="col-form-label">Count 2 Symbol</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count2Symbol">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Label 2(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.Label2English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Label 2(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.Label2Arabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Count 2 Image (200 x 200)</label>
+                            @if (!string.IsNullOrEmpty(Model.Count2ImagePath))
+                            {
+                                <br />
+                                <img src="/@Model.Count2ImagePath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.Count2ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Count2Image">
+                            <label class="col-form-label">Count 2 Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count2ImageAlt">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="col-form-label">Count 3</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count3">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="col-form-label">Count 3 Symbol</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count3Symbol">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Label 3 (English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.Label3English">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Label 3(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.Label3Arabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Count 3 Image (200 x 200)</label>
+                            @if (!string.IsNullOrEmpty(Model.Count3ImagePath))
+                            {
+                                <br />
+
+                                <img src="/@Model.Count3ImagePath" width="150" alt="image-preview" />
+
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.Count3ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Count3Image">
+                            <label class="col-form-label">Count 3 Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.Count3ImageAlt">
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" id="formsubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    Images
+                </h4>
+                <a asp-action="Get" asp-route-id="0" class="btn btn-primary btn-xs">New</a>
+            </div><div class="card-body">
+                <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
+                    <thead><tr><th width="40%">Image</th><th width="20%">Status</th><th width="20%">Display Order</th><th width="20%">Action</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.AboutGallerys)
+                        {
+                            <tr><td><img src="@Html.Raw("/" + item.ImagePath)" width="120" /></td><td>@Html.Raw(item.IsActive ? "Enabled" : "Disabled")</td><td>@Html.Raw(item.DisplayOrder)</td><td><a asp-action="Get" asp-route-id="@item.Id" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    Testimonials
+                </h4>
+                <a asp-action="GetTestimonial" asp-route-id="0" class="btn btn-primary btn-xs">New</a>
+            </div><div class="card-body">
+                <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
+                    <thead><tr><th width="40%">Name</th><th width="20%">Status</th><th width="20%">Display Order</th><th width="20%">Action</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.Testimonials)
+                        {
+                            <tr><td>@Html.Raw(item.NameEnglish)</td><td>@Html.Raw(item.IsActive ? "Enabled" : "Disabled")</td><td>@Html.Raw(item.DisplayOrder)</td><td><a asp-action="GetTestimonial" asp-route-id="@item.Id" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

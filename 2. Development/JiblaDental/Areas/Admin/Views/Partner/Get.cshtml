@@ -1,0 +1,76 @@
+﻿@model PartnerViewModel
+@{
+    var partnercategory = Model.PartnerCategory!;
+    var partner = Model.Partner!;
+}
+@section Title
+{
+    <a asp-action="GetSection" class="btn btn-primary btn-xs">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+Entry
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("Post", "Partner", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    var Model = partnercategory!;
+                    <div class="modal-body row">
+                        <input type="hidden" asp-for="@Model.Id">
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleArabic" dir="rtl">
+                        </div>
+                        @if (Model.Id is > 0)
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Display Order</label>
+                                <input type="number" min="1" class="form-control" asp-for="@Model.DisplayOrder">
+                            </div>
+                        }
+                        <div class="mb-3 col-md-12">
+                            <label class="form-check-label">Enabled</label>
+                            <input asp-for="@Model.IsActive" type="checkbox" class="form-check-input" />
+                        </div>
+                        <div class="btn-group">
+                            @if (partner.Any())
+                            {
+                                <button disabled asp-action="Delete" asp-route-id="@Model.Id" style="pointer-events: auto" title="Please delete all child entities before attempting to delete this entity." onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">Delete</button>
+                            }
+                            else if (Model.Id > 0)
+                            {
+                                <button asp-action="Delete" asp-route-id="@Model.Id" onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">Delete</button>
+                            }
+                            <button type="submit" id="formsubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>@if (Model.PartnerCategory.Id > 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header"><a asp-action="GetContent" asp-route-id="0" asp-route-partnercategoryId="@Model.PartnerCategory.Id" class="btn btn-primary btn-xs">New</a></div><div class="card-body">
+                    <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
+                        <thead><tr><th width="40%">Title</th><th width="20%">Status</th><th width="20%">Display Order</th><th width="20%">Action</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.Partner)
+                            {
+                                <tr><td>@Html.Raw(item.TitleEnglish)</td><td>@Html.Raw(item.IsActive ? "Enabled" : "Disabled")</td><td>@Html.Raw(item.DisplayOrder)</td><td><a asp-action="GetContent" asp-route-id="@item.Id" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a></td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

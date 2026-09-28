@@ -1,0 +1,302 @@
+@model HomeViewModel
+@{
+	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+	var cultureIsArabic = cultureCode == CultureCode.Arabic;
+	var pageSettings = Model.Pages!.First(x => x.Name == "index");
+	var homeBanner = Model.HomeBanner!;
+	var about = Model.About!;
+	var services = Model.Services!;
+	var servicesection = Model.ServiceSection!;
+	var contact = Model.Contact!;
+	var partners = Model.Partners!;
+	var partnersection = Model.PartnerSection!;
+	var teamsection = Model.TeamSection!;
+	var teams = Model.Teams!;
+	int i = 0;
+	int bannerIndex = 0;
+	var teamImageUrl = teams != null && teams.Any(x => !string.IsNullOrEmpty(x.ImagePath)) 
+		? "https://www.jibladental.com/" + teams.First(x => !string.IsNullOrEmpty(x.ImagePath)).ImagePath 
+		: "https://www.jibladental.com/assets/images/dark-logo.png";
+}
+
+@section seo {
+	<title>@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoTitleArabic) ? pageSettings.SeoTitleArabic : "مركز جبلة لطب الأسنان") : "Dental Clinic in Kuwait | Best Dentist in Kuwait | Jibla Dental Center")</title>
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoDescriptionArabic) ? pageSettings.SeoDescriptionArabic : "مركز جبلة لطب الأسنان يقدم رعاية أسنان احترافية من أطباء أسنان ذوي خبرة في الكويت.") : "Looking for a trusted dental clinic in Kuwait? Jibla Dental Center offers professional dental care from experienced dentists. Book your appointment today.")">
+	<meta property="og:title" content="@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoTitleArabic) ? pageSettings.SeoTitleArabic : "Dental Clinic in Kuwait | Dentist in Kuwait | Jibla Dental Center") : "Dental Clinic in Kuwait | Dentist in Kuwait | Jibla Dental Center")">
+	<meta property="og:description" content="@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoDescriptionArabic) ? pageSettings.SeoDescriptionArabic : "Looking for a trusted dental clinic in Kuwait? Jibla Dental Center offers professional dental care from experienced dentists in Kuwait.") : "Looking for a trusted dental clinic in Kuwait? Jibla Dental Center offers professional dental care from experienced dentists in Kuwait.")">
+	<meta property="og:url" content="https://www.jibladental.com/">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Jibla Dental Center">
+	<meta property="og:image" content="@teamImageUrl">
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+	<meta name="geo.position" content="29.361490314925696;47.966395809782824">
+	<meta name="geo.placename" content="Kuwait City, Kuwait">
+	<meta name="geo.region" content="KW-KU">
+	<meta name="ICBM" content="29.361490314925696, 47.966395809782824">
+}
+
+<div class="rs-slider rs-slider-style2">
+	<div class="rs-carousel owl-carousel" data-loop="true" data-items="1" data-margin="0" data-autoplay="true" data-hoverpause="false" data-autoplay-timeout="4000" data-smart-speed="800" data-dots="false" data-nav="true" data-nav-speed="false" data-center-mode="false" data-mobile-device="1" data-mobile-device-nav="false" data-mobile-device-dots="false" data-ipad-device="1" data-ipad-device-nav="true" data-ipad-device-dots="false" data-ipad-device2="1" data-ipad-device-nav2="true" data-ipad-device-dots2="false" data-md-device="1" data-md-device-nav="true" data-md-device-dots="false">
+		@foreach (var item in homeBanner)
+		{
+			<div class="slider-direction">
+				<img src="@Html.Raw("/" + item.ImagePath)" />
+			<div class="container">
+				<div class="content-part text-center">
+						<span class="sl-subtitle wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0s">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</span>
+					@if (bannerIndex == 0)
+					{
+						<h1 class="sl-title wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s">
+							@Html.Raw(cultureIsArabic ? item.BodyArabic : item.BodyEnglish)
+						</h1>
+					}
+					else
+					{
+						<div class="sl-title h1-style wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s">
+							@Html.Raw(cultureIsArabic ? item.BodyArabic : item.BodyEnglish)
+						</div>
+					}
+						@if (!string.IsNullOrEmpty(item.ButtonUrl))
+						{
+					<div class="slider-bottom wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.9s">
+								<a class="readon slide-touch" href="@item.ButtonUrl">@Html.Raw(cultureIsArabic ? item.ButtonTitleArabic : item.ButtonTitleEnglish)</a>
+					</div>
+						}
+				</div>
+			</div>
+		</div>
+			bannerIndex++;
+		}
+	</div>
+</div>
+
+<div class="rs-about about-style2 pt-100 pb-100 md-pt-80 md-pb-50">
+	<div class="container">
+		<div class="row y-middle">
+			@if (!string.IsNullOrEmpty(about.HomeImagePath))
+			{
+			<div class="col-lg-6 md-mb-50">
+				<div class="about-img wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="0s">
+						<img src="@Html.Raw("/" + about.HomeImagePath)" alt="@about.HomeImageAlt">
+				</div>
+			</div>
+			}
+			<div class="col-lg-6 pl-50 md-pl-15">
+				<div class="sec-title3 mb-30">
+					<span class="sub-text">@Html.Raw(cultureIsArabic ? about.HomeTaglineArabic : about.HomeTaglineEnglish)</span>
+					<h2 class="title pb-20">
+						@Html.Raw(cultureIsArabic ? about.HomeTitleArabic : about.HomeTitleEnglish)
+					</h2>
+					<div class="valuesdiv">
+					<p class="desc">@Html.Raw(cultureIsArabic ? about.HomeBodyArabic : about.HomeBodyEnglish)</p>
+					</div>
+				</div>
+
+				<!-- Counter Section End -->
+				<div class="btn-part mt-10 md-mt-15">
+					<a class="readon details" asp-action="Index" asp-controller="About">@Html.Raw(cultureIsArabic ? "اكتشف المزيد" : "Discover More")</a>
+				</div>
+
+			</div>
+		</div>
+
+
+		<!-- Counter Section Start -->
+		<div class="rs-counter counter-style3 counter-modify1 mt-100">
+			<div class="counter-top mycount">
+				<div class="row justify-content-center">
+					<div class="col-lg-4 col-md-6 md-mb-30">
+						<div class="rs-counter-list">
+							<div class="counter-text">
+								@if (!string.IsNullOrEmpty(about.Count1ImagePath))
+								{
+								<div class="counter-icon">
+										<img src="@Html.Raw("/" + about.Count1ImagePath)" alt="@about.Count1ImageAlt">
+								</div>
+								}
+								<div class="counter-number">
+									<span class="rs-count odometer" data-count="@about.Count1">00</span>
+									<span class="prefix">@Html.Raw(about.Count1Symbol)</span>
+								</div>
+								<span class="title">@Html.Raw(cultureIsArabic ? about.Label1Arabic : about.Label1English)</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-6 md-mb-30">
+						<div class="rs-counter-list">
+							<div class="counter-text">
+								@if (!string.IsNullOrEmpty(about.Count2ImagePath))
+								{
+									<div class="counter-icon">
+										<img src="@Html.Raw("/" + about.Count2ImagePath)" alt="@about.Count2ImageAlt">
+									</div>
+								}
+								<div class="counter-number">
+									<span class="rs-count odometer" data-count="@about.Count2">00</span>
+									<span class="prefix">@Html.Raw(about.Count2Symbol)</span>
+								</div>
+								<span class="title">@Html.Raw(cultureIsArabic ? about.Label2Arabic : about.Label2English)</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-6 sm-mb-30">
+						<div class="rs-counter-list">
+							<div class="counter-text">
+								@if (!string.IsNullOrEmpty(about.Count3ImagePath))
+								{
+									<div class="counter-icon">
+										<img src="@Html.Raw("/" + about.Count3ImagePath)" alt="@about.Count3ImageAlt">
+									</div>
+								}
+								<div class="counter-number">
+									<span class="rs-count odometer" data-count="@about.Count3">00</span>
+									<span class="prefix">@Html.Raw(about.Count3Symbol)</span>
+								</div>
+								<span class="title">@Html.Raw(cultureIsArabic ? about.Label3Arabic : about.Label3English)</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Counter Section End -->
+
+	</div>
+</div>
+
+<section class="cs_gray_bg">
+	<div class="container">
+		<div class="cs_section_heading cs_style_1 cs_type_1">
+			<div class="cs_section_heading_left">
+				<p class="cs_section_subtitle cs_accent_color wow fadeInLeft" data-wow-duration="0.9s" data-wow-delay="0.25s">
+					<span class="cs_shape_left"></span>
+					@Html.Raw(cultureIsArabic ? servicesection.TaglineArabic : servicesection.TaglineEnglish)
+				</p>
+				<h2 class="cs_section_title">@Html.Raw(cultureIsArabic ? servicesection.TitleArabic : servicesection.TitleEnglish)</h2>
+			</div>
+			<div class="cs_section_heading_right">@Html.Raw(cultureIsArabic ? servicesection.BodyArabic : servicesection.BodyEnglish)</div>
+		</div>
+		<div class="cs_height_50 cs_height_lg_50"></div>
+		<div class="row cs_row_gap_30 cs_gap_y_30">
+			@foreach(var item in services)
+			{
+				i++;
+			<div class="col-xl-4 col-lg-4 col-sm-6">
+				<div class="cs_iconbox cs_style_2 cs_radius_15 cs_hover_layer_2">
+						<div class="cs_iconbox_overlay cs_bg_filed" data-src="@Html.Raw("/" + item.HomeImagePath)" style="background-image: url(@Html.Raw("/" + item.HomeImagePath));"></div>
+					<div class="cs_iconbox_shape"></div>
+					<div class="cs_iconbox_header d-flex align-items-center justify-content-between">
+						<div class="cs_iconbox_icon cs_center">
+								<img src="@Html.Raw("/" + item.IconPath)" alt="@item.IconAlt">
+						</div>
+							<h3 class="iconbox_index">@Html.Raw(i < 10 ? "0" + i : i)</h3>
+					</div>
+						<h3 class="cs_iconbox_title"><a asp-action="Index" asp-controller="Services" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</a></h3>
+						<p class="cs_iconbox_subtitle m-0">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</p>
+				</div>
+			</div>
+			}
+		</div>
+
+		<div class="cs_service_footer">
+			<div class="cs_service_footer_text cs_medium">
+				@if (Model.Pages.FirstOrDefault(x => x.Id == 16) != null)
+				{
+					var page = Model.Pages.FirstOrDefault(x => x.Id == 16)!;
+					<a class="readon details" href="@Html.Raw(page.BannerSubTitle)" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a>
+				}
+				
+			</div>
+		</div>
+
+	</div>
+
+</section>
+
+<div class="rs-team team-style3 mt-100 pt-100 pb-100 md-pt-80 md-pb-80 cs_gray_bg_2">
+	<div class="container">
+
+		<div class="sec-title text-center mb-45 md-mb-25">
+			<span class="sub-text big-text">@Html.Raw(cultureIsArabic ? teamsection.TaglineArabic : teamsection.TaglineEnglish)</span>
+			<h2 class="title title2 title-color">
+				@Html.Raw(cultureIsArabic ? teamsection.TitleArabic : teamsection.TitleEnglish)
+			</h2>
+		</div>
+
+		<div class="row">
+
+
+			<div class="rs-carousel owl-carousel" data-loop="true" data-items="3" data-margin="30" data-autoplay="true" data-hoverpause="false" data-autoplay-timeout="2000" data-smart-speed="800" data-dots="true" data-nav="false" data-nav-speed="false" data-center-mode="false" data-mobile-device="1" data-mobile-device-nav="false" data-mobile-device-dots="true" data-ipad-device="2" data-ipad-device-nav="false" data-ipad-device-dots="true" data-ipad-device2="1" data-ipad-device-nav2="false" data-ipad-device-dots2="true" data-md-device="3" data-md-device-nav="false" data-md-device-dots="true">
+
+				@foreach(var item in teams)
+				{
+				<div class="col-lg-12 col-md-12 mb-30">
+					<div class="team-item">
+						<div class="team-inner-wrap">
+							@if(!string.IsNullOrEmpty(item.ImagePath))
+							{
+							<div class="image-wrap">
+										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt"></a>
+							</div>
+							}
+							<div class="team-content">
+									<h3 class="team-name"><a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></h3>
+								<ul class="social-icon">
+									<li>
+											<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+			</div>
+		</div>
+	</div>
+</div>
+
+<section class="matp-50 pt-30">
+	<div class="container">
+		<div class="cs_section_heading cs_style_1 cs_type_1">
+			<div class="cs_section_heading_left">
+				<p class="cs_section_subtitle cs_accent_color wow fadeInLeft" data-wow-duration="0.9s" data-wow-delay="0.25s">
+					<span class="cs_shape_left"></span>@Html.Raw(cultureIsArabic ? partnersection.HomeTaglineArabic : partnersection.HomeTaglineEnglish)
+				</p>
+				<h2 class="cs_section_title">@Html.Raw(cultureIsArabic ? partnersection.HomeTitleArabic : partnersection.HomeTitleEnglish)</h2>
+			</div>
+			<div class="cs_section_heading_right">@Html.Raw(cultureIsArabic ? partnersection.HomeBodyArabic : partnersection.HomeBodyEnglish)</div>
+		</div>
+		<div class="cs_height_135 cs_height_lg_115"></div>
+		<div class="cs_slider cs_style_1 cs_slider_gap_24 position-relative">
+			<div class="cs_slider_container" data-autoplay="0" data-loop="1" data-speed="600" data-center="0"
+				 data-variable-width="0" data-slides-per-view="responsive" data-xs-slides="1" data-sm-slides="2" data-md-slides="3" data-lg-slides="3" data-add-slides="3" dir="rtl">
+				<div class="cs_slider_wrapper cs_remove_overflow">
+					@foreach(var item in partners)
+					{
+					<div class="cs_slide">
+						<div class="cs_card cs_style_6">
+							<div class="cs_card_shape cs_bg_filed" data-src="/assets/images/overlay_bg_1.jpg"></div>
+								@if (!string.IsNullOrEmpty(item.LogoPath))
+							{
+							<div class="cs_card_thumbnail cs_center">
+								<img src="@Html.Raw("/" + item.LogoPath)" alt="@item.LogoAlt">
+							</div>
+							}
+							<div class="cs_card_info partnersdiv">
+									<h3 class="cs_card_title"><a asp-action="Details" asp-controller="Partners" asp-route-id="@item.Id">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</a></h3>
+									<p class="cs_card_subtitle mb-0">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</p>
+							</div>
+								<a class='cs_card_btn cs_center' asp-action="Details" asp-controller="Partners" asp-route-id="@item.Id"><i class="fa-solid fa-circle-chevron-right"></i></a>
+						</div>
+					</div>
+					}
+				</div>
+			</div>
+			<div class="cs_height_20 cs_height_lg_20"></div>
+			<div class="cs_pagination cs_style_2 cs_accent_color"></div>
+		</div>
+	</div>
+	<div class="cs_height_120 cs_height_lg_80"></div>
+</section>

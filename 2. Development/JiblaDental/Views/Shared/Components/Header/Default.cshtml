@@ -1,0 +1,279 @@
+@model HeaderViewModel
+
+@{
+	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+	var pages = Model.Pages!;
+	var socialmedia = Model.SocialMedia!;
+	var contact = Model.Contact!;
+}
+
+<div class="full-width-header">
+	<!--Header Start-->
+	<header id="rs-header" class="rs-header header-style2 header-modify2 header-transparent">
+		<!-- Toolbar Area Start -->
+		<div class="toolbar-area topbar-style1 topber-modify1 hidden-md">
+			<div class="container">
+				<div class="row rs-vertical-middle">
+					<div class="col-lg-8">
+						<div class="toolbar-contact">
+							<ul class="rs-contact-info">
+								<li>
+									<i class="fi fi-rr-envelope-plus"></i>
+									<a href="mailto:@Html.Raw(contact.HeaderEmail)">@Html.Raw(contact.HeaderEmail)</a>
+								</li>
+								<li>
+									<i class="fi fi-rr-phone-call"></i>
+									<a href="tel:@Html.Raw(contact.HeaderPhone)">
+										@Html.Raw(contact.HeaderPhone)
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<div class="toolbar-sl-share">
+							<ul class="clearfix">
+								@foreach(var item in socialmedia)
+								{
+									<li><a href="@item.Url" target="_blank"><i class="fab fa-@Html.Raw(item.Name)"></i></a></li>
+								}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Toolbar Area End -->
+		<!-- Menu Start -->
+		<div class="menu-area menu-sticky">
+			<div class="container">
+				<div class="row-table">
+					<div class="col-cell header-logo">
+						<div class="logo-area newdisplay1">
+							<a href="~/">
+								<img class="normal-logo" src="/assets/images/white-logo2.png" alt="logo"> <img class="sticky-logo" src="/assets/images/dark-logo.png" alt="logo">
+							</a>
+						</div>
+						<div class="logo-area newdisplay2">
+							<a href="~/">
+								<img class="sticky-logo" src="/assets/images/dark-logo2.png" alt="logo">
+							</a>
+						</div>
+					</div>
+					<div class="col-cell">
+						<div class="rs-menu-area">
+							<div class="main-menu">
+								<nav class="rs-menu hidden-md">
+									<ul class="nav-menu">
+										@foreach (var page in pages)
+										{
+											@switch (page.Name)
+											{
+												case "index":
+												case "contact":
+												case "privacy-policy":
+												case "faq":
+												case "news":
+												case "insurance":
+												case "video-hub":
+												case "careers":
+												case "result":
+												case "error":
+												case "appointment":
+													break;
+
+												default:
+													<li><a href="@Html.Raw("/" + page.Name)">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
+													break;
+											}
+										}
+									</ul>
+								</nav>
+							</div>
+						</div>
+					</div>
+					<div class="col-cell">
+						<div class="expand-btn-inner">
+							<ul>
+								@if(pages.FirstOrDefault(x => x.Id == 16) != null)
+								{
+									var page = pages.FirstOrDefault(x => x.Id == 16)!;
+									<li class="btn-quote"><a class="quote-button __mPS2id" href="@Html.Raw(page.BannerSubTitle)" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
+								}
+								@if (contact.IsArabicEnabled)
+								{
+									<li class="sidebarmenu-search lang">
+										@using (Html.BeginForm())
+										{
+											if (cultureCode == CultureCode.English)
+											{
+												<button asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.Arabic" asp-route-returnUrl="@Context.Request.Path">
+													<img src="/assets/images/kuwait.png" alt="">
+												</button>
+											}
+											else
+											{
+												<button asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.English" asp-route-returnUrl="@Context.Request.Path">
+                                                    <img src="~/ar/assets/images/en.png" />
+												</button>
+											}
+										}
+									</li>
+								}
+
+								<li class="humburger">
+									<a id="nav-expander" class="nav-expander bar" href="#">
+										<div class="bar">
+											<span class="dot1"></span>
+											<span class="dot2"></span>
+											<span class="dot3"></span>
+											<span class="dot4"></span>
+											<span class="dot5"></span>
+											<span class="dot6"></span>
+											<span class="dot7"></span>
+											<span class="dot8"></span>
+											<span class="dot9"></span>
+										</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Menu End -->
+		<!-- Canvas Menu start -->
+		<nav class="right_menu_togle menu-wrap-off  hidden-md">
+			<div class="close-btn">
+				<a id="nav-close" class="nav-close">
+					<div class="line">
+						<span class="line1"></span>
+						<span class="line2"></span>
+					</div>
+				</a>
+			</div>
+			<div class="rs-offcanvas-inner">
+				<div class="canvas-logo">
+					<a href="~/"><img src="/assets/images/dark-logo2.png" alt="logo"></a>
+				</div>
+				<div class="canvas-contact">
+					<div class="address-area">
+						<div class="address-list">
+							<div class="info-icon">
+								<i class="flaticon-email"></i>
+							</div>
+							<div class="info-content">
+								<div class="title">@Html.Raw(cultureCode == CultureCode.English ? "Email" : "بريد إلكتروني")</div>
+								<em><a href="mailto:@Html.Raw(contact.HeaderEmail)">@Html.Raw(contact.HeaderEmail)</a></em>
+							</div>
+						</div>
+						<div class="address-list">
+							<div class="info-icon">
+								<i class="flaticon-call"></i>
+							</div>
+							<div class="info-content">
+								<div class="title">@Html.Raw(cultureCode == CultureCode.English ? "Phone" : "هاتف")</div>
+								<em>@Html.Raw(contact.HeaderPhone)</em>
+							</div>
+						</div>
+					</div>
+					<ul class="social">
+						@foreach (var item in socialmedia)
+						{
+							<li><a href="@item.Url" target="_blank"><i class="fab fa-@item.Name"></i></a></li>
+						}
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<!-- Canvas Menu end -->
+		<!-- Canvas Mobile Menu start -->
+		<nav class="right_menu_togle mobile-navbar-menu" id="mobile-navbar-menu">
+			<div class="close-btn">
+				<a id="nav-close2" class="nav-close">
+					<div class="line">
+						<span class="line1"></span>
+						<span class="line2"></span>
+					</div>
+				</a>
+			</div>
+			@if (contact.IsArabicEnabled)
+			{
+				<div class="sidebarmenu-search lang lang2">
+					@using (Html.BeginForm())
+					{
+						if (cultureCode == CultureCode.English)
+						{
+							<button asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.Arabic" asp-route-returnUrl="@Context.Request.Path">
+								<img src="/assets/images/kuwait.png" alt="">
+							</button>
+						}
+						else
+						{
+							<button asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.English" asp-route-returnUrl="@Context.Request.Path">
+								<img src="~/ar/assets/images/en.png" />
+							</button>
+						}
+					}
+				</div>
+			}
+			<ul class="nav-menu">
+				@foreach (var page in pages)
+				{
+					@switch (page.Name)
+					{
+						case "index":
+						case "contact":
+						case "privacy-policy":
+						case "faq":
+						case "news":
+						case "insurance":
+						case "video-hub":
+						case "careers":
+						case "result":
+						case "error":
+						case "appointment":
+							break;
+
+						default:
+							<li><a href="@Html.Raw("/" + page.Name)">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
+							break;
+					}
+				}
+			</ul>
+			<!-- //.nav-menu -->
+
+			<div class="canvas-contact">
+				<div class="address-area">
+					<div class="address-list">
+						<div class="info-icon">
+							<i class="flaticon-email"></i>
+						</div>
+						<div class="info-content">
+							<div class="title">@Html.Raw(cultureCode == CultureCode.English ? "Email" : "بريد إلكتروني")</div>
+							<em><a href="mailto:@Html.Raw(contact.HeaderEmail)">@Html.Raw(contact.HeaderEmail)</a></em>
+						</div>
+					</div>
+					<div class="address-list">
+						<div class="info-icon">
+							<i class="flaticon-call"></i>
+						</div>
+						<div class="info-content">
+							<div class="title">@Html.Raw(cultureCode == CultureCode.English ? "Phone" : "هاتف")</div>
+							<em>@Html.Raw(contact.HeaderPhone)</em>
+						</div>
+					</div>
+				</div>
+			</div>
+			@if (pages.FirstOrDefault(x => x.Id == 16) != null)
+			{
+				var page = pages.FirstOrDefault(x => x.Id == 16)!;
+				<ul class="nav-menu">
+					<li class="btn-quote"><a class="readon details book1" href="@Html.Raw(page.BannerSubTitle)" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
+				</ul>
+			}
+		</nav>
+	</header>
+</div>

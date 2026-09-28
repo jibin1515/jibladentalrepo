@@ -1,0 +1,234 @@
+﻿@model TeamViewModel
+
+@{
+    var section = Model.Team;
+    var content = Model.Content!;
+    var departments = Model.Departments!;
+    var ids = section.Id > 0 ? section.DepartmentIds.Split(',').Select(long.Parse).ToList() : new List<long>();
+    int i = 0;
+}
+
+@section Title
+{
+    <a asp-action="GetAll" class="btn btn-primary btn-xs"><i class="fas fa-arrow-left"></i></a>Entry
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("PostContent", "Team", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    var Model = section!;
+                    <div class="modal-body row">
+                        <input type="hidden" asp-for="@Model.Id">
+                        @* <input type="hidden" asp-for="@Model.DepartmentId"> *@
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Department (Use ctrl button to select multiple items)</label>
+                            <select class="form-control" multiple id="DepId" name="DepId" required>
+                                @foreach (var item in departments)
+                                {
+                                    if (Model.Id > 0)
+                                    {
+                                        if (ids.Contains(item.Id))
+                                        {
+                                            <option value="@item.Id" selected>@Html.Raw(item.TitleEnglish)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Id">@Html.Raw(item.TitleEnglish)</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        i++;
+                                        if (i == 1)
+                                        {
+                                            <option value="@item.Id" selected="selected">@Html.Raw(item.TitleEnglish)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Id">@Html.Raw(item.TitleEnglish)</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                        
+
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Name(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.NameEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Name(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.NameArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Designation(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.ShortBodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Designation(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.ShortBodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Description(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.BodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Description(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.BodyArabic" dir="rtl"></textarea>
+                        </div>
+                        
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Image (600 x 538)</label>
+                            @if (!string.IsNullOrEmpty(Model.ImagePath))
+                            {
+                                <br />
+
+                                <img src="/@Model.ImagePath" width="150" alt="image-preview" />
+
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Image">
+                            <label class="col-form-label">Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.ImageAlt">
+                        </div>
+                        @if (Model.Id is > 0)
+                        {
+                            <br />
+
+                            <br />
+
+                            <div class="card-header"><h4 class="card-title">Page settings</h4></div>
+
+                            <div class="mb-3 col-md-12"><label class="col-form-label">Page name(Shown on the URL)</label><input type="text" class="form-control" asp-for="@Model.PageName"></div>
+
+                            <div class="mb-3 col-md-6"><label class="col-form-label">SEO Title (English)</label><input type="text" class="form-control" asp-for="@Model.SeoTitleEnglish"></div>
+
+                            <div class="mb-3 col-md-6"><label class="col-form-label">SEO Title (Arabic)</label><input type="text" class="form-control" asp-for="@Model.SeoTitleArabic"></div>
+
+                            <div class="mb-3 col-md-6"><label class="col-form-label">SEO Description (English)</label><textarea class="form-control" asp-for="@Model.SeoDescriptionEnglish"></textarea></div>
+
+                            <div class="mb-3 col-md-6"><label class="col-form-label">SEO Description (Arabic)</label><textarea class="form-control" asp-for="@Model.SeoDescriptionArabic"></textarea></div>
+
+                            <div class="mb-3 col-md-12"><label class="col-form-label">Display Order</label><input type="number" min="1" class="form-control" asp-for="@Model.DisplayOrder"></div>
+                        }
+                        <div class="mb-3 col-md-12">
+                            <label class="form-check-label">Enabled</label>
+                            <input asp-for="@Model.IsActive" type="checkbox" class="form-check-input" />
+                        </div>
+                        <div class="btn-group">
+                            @if (content.Any())
+                            {
+                                <button disabled asp-action="DeleteContent" asp-route-id="@Model.Id" style="pointer-events: auto" title="Please delete all child entities before attempting to delete this entity." onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">Delete</button>
+                            }
+                            else if (Model.Id > 0)
+                            {
+                                <button asp-action="DeleteContent" asp-route-id="@Model.Id" onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">Delete</button>
+                            }
+                            <button type="submit" id="formsubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(section.Id > 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        Social Media
+                    </h4>
+                    <a asp-action="GetService" asp-route-id="0" asp-route-teamId="@Model.Team.Id" asp-route-type="social" class="btn btn-primary btn-xs">New</a>
+                </div><div class="card-body">
+                    <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
+                        <thead><tr><th width="40%">Name</th><th width="20%">Status</th><th width="20%">Display Order</th><th width="20%">Action</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in content.Where(x => x.Type == "social"))
+                            {
+                                <tr><td>@Html.Raw(item.Name)</td><td>@Html.Raw(item.IsActive ? "Enabled" : "Disabled")</td><td>@Html.Raw(item.DisplayOrder)</td><td><a asp-action="GetService" asp-route-id="@item.Id" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a></td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        Services
+                    </h4>
+                    <a asp-action="GetService" asp-route-id="0" asp-route-teamId="@Model.Team.Id" asp-route-type="service" class="btn btn-primary btn-xs">New</a>
+                </div><div class="card-body">
+                    <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
+                        <thead><tr><th width="40%">Title</th><th width="20%">Status</th><th width="20%">Display Order</th><th width="20%">Action</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in content.Where(x => x.Type == "service"))
+                            {
+                                <tr><td>@Html.Raw(item.TitleEnglish)</td><td>@Html.Raw(item.IsActive ? "Enabled" : "Disabled")</td><td>@Html.Raw(item.DisplayOrder)</td><td><a asp-action="GetService" asp-route-id="@item.Id" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a></td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        Qualifications
+                    </h4>
+                    <a asp-action="GetService" asp-route-id="0" asp-route-teamId="@Model.Team.Id" asp-route-type="qualification" class="btn btn-primary btn-xs">New</a>
+                </div><div class="card-body">
+                    <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
+                        <thead><tr><th width="40%">Title</th><th width="20%">Status</th><th width="20%">Display Order</th><th width="20%">Action</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in content.Where(x => x.Type == "qualification"))
+                            {
+                                <tr><td>@Html.Raw(item.TitleEnglish)</td><td>@Html.Raw(item.IsActive ? "Enabled" : "Disabled")</td><td>@Html.Raw(item.DisplayOrder)</td><td><a asp-action="GetService" asp-route-id="@item.Id" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a></td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        Gallery
+                    </h4>
+                    <a asp-action="GetService" asp-route-id="0" asp-route-teamId="@Model.Team.Id" asp-route-type="gallery" class="btn btn-primary btn-xs">New</a>
+                </div><div class="card-body">
+                    <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
+                        <thead><tr><th width="40%">Image</th><th width="20%">Status</th><th width="20%">Display Order</th><th width="20%">Action</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in content.Where(x => x.Type == "gallery"))
+                            {
+                                <tr><td><img src="@Html.Raw("/" + item.ImagePath)" width="120" /></td><td>@Html.Raw(item.IsActive ? "Enabled" : "Disabled")</td><td>@Html.Raw(item.DisplayOrder)</td><td><a asp-action="GetService" asp-route-id="@item.Id" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a></td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

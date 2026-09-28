@@ -1,0 +1,49 @@
+﻿@model HomeViewModel
+
+@{
+	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+	var cultureIsArabic = cultureCode == CultureCode.Arabic;
+	var pageSettings = Model.Pages!.First(x => x.Name == "insurance");
+	var insurance = Model.Insurance!;
+	var section = Model.InsuranceSection!;
+}
+
+@section seo {
+	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+}
+
+<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
+	<div class="container">
+		<div class="breadcrumbs-inner">
+			<h1 class="page-title">
+				@Html.Raw(cultureIsArabic ? pageSettings.BannerTitleArabic : pageSettings.BannerTitleEnglish)
+			</h1>
+		</div>
+	</div>
+</div>
+
+<div class="rs-partner partner-main-home partner-modify1 pt-115 pb-120 md-pt-75 md-pb-80">
+	<div class="container">
+		<div class="sec-title text-center mb-55 md-mb-25 insurance_div">
+			<h2 class="title title title2 title-color">
+				@Html.Raw(cultureIsArabic ? section.TitleArabic : section.TitleEnglish)
+			</h2>
+			<p>@Html.Raw(cultureIsArabic ? section.BodyArabic : section.BodyEnglish)</p>
+		</div>
+		<div class="row justify-content-center insurance01">
+			@foreach(var item in insurance)
+			{
+			<div class="col-lg-3 col-md-6 col-sm-6 mb-30">
+				<div class="grid-figure">
+					<div class="logo-img">
+						<a><img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt"></a>
+					</div>
+				</div>
+			</div>
+			}
+
+		</div>
+	</div>
+</div>

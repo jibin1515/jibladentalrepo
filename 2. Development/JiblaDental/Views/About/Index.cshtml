@@ -1,0 +1,275 @@
+﻿@model HomeViewModel
+
+@{
+	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+	var cultureIsArabic = cultureCode == CultureCode.Arabic;
+	var pageSettings = Model.Pages!.First(x => x.Name == "our-center");
+	var about = Model.About!;
+	var gallery = Model.AboutGalleries!;
+	var testimonials = Model.Testimonials!;
+}
+
+@section seo {
+    <title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
+    <meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+}
+
+<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
+	<div class="container">
+		<div class="breadcrumbs-inner">
+			<h1 class="page-title">
+				@Html.Raw(cultureIsArabic ? pageSettings.BannerTitleArabic : pageSettings.BannerTitleEnglish)
+			</h1>
+		</div>
+	</div>
+</div>
+
+<div class="rs-project-details pt-100 md-pt-80">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-lg-4 md-mb-30 ceo_div">
+				@if(!string.IsNullOrEmpty(about.CEOImagePath))
+				{
+				<img src="@Html.Raw("/" + about.CEOImagePath)" alt="@about.CEOImageAlt">
+				}
+				<h5>@Html.Raw(cultureIsArabic ? about.CEOTaglineArabic : about.CEOTaglineEnglish)</h5>
+				<h3>@Html.Raw(cultureIsArabic ? about.CEONameArabic : about.CEONameEnglish)</h3>
+			</div>
+			<div class="col-lg-8 md-mb-30">
+				<div class="project-content ceo_div">
+
+					<p>@Html.Raw(cultureIsArabic ? about.CEOBodyArabic : about.CEOBodyEnglish)</p>
+
+				</div>
+			</div>
+
+
+		</div>
+
+
+
+	</div>
+	<!-- Call To Action Choose Start -->
+
+</div>
+
+
+<div class="container mt-10">
+
+	<div class="thumbnail_slider">
+		<!-- Primary Slider Start-->
+		<div id="primary_slider">
+			<div class="splide__track">
+				<ul class="splide__list">
+					@foreach (var item in gallery)
+					{
+					<li class="splide__slide bigimg">
+							<img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt">
+					</li>
+					}
+				</ul>
+			</div>
+		</div>
+		<!-- Primary Slider End-->
+		<!-- Thumbnal Slider Start-->
+		<div id="thumbnail_slider">
+			<div class="splide__track">
+				<ul class="splide__list">
+					@foreach (var item in gallery)
+					{
+					<li class="splide__slide">
+							<img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt">
+					</li>
+					}
+				</ul>
+			</div>
+		</div>
+		<!-- Thumbnal Slider End-->
+	</div>
+
+</div>
+
+@* <div class="container mt-40">
+	<!-- Flickity HTML init -->
+	<div class="carousel carousel-main" data-flickity='{"pageDots": false }'>
+		@foreach(var item in gallery)
+		{
+		<div class="carousel-cell"><img src="@Html.Raw("/" + item.ImagePath)" /></div>
+		}
+	</div>
+
+	<div class="carousel carousel-nav"
+		 data-flickity='{ "asNavFor": ".carousel-main", "contain": true, "pageDots": false }'>
+		@foreach (var item in gallery)
+		{
+			<div class="carousel-cell"><img src="@Html.Raw("/" + item.ImagePath)" /></div>
+		}
+	</div>
+
+</div> *@
+
+<div id="rs-about" class="rs-about about-style2 twistdiv pt-120 md-pt-80">
+	<div class="container">
+		<div class="row y-middle">
+			@if(!string.IsNullOrEmpty(about.ImagePath))
+			{
+			<div class="col-lg-6 pr-40 md-pr-15 md-mb-50">
+				<div class="about-img wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="0s">
+					<img src="@Html.Raw("/" + about.ImagePath)" alt="@about.ImageAlt">
+				</div>
+			</div>
+			}
+			<div class="col-lg-6 pr-35 md-pr-15 pl-30 md-pl-15">
+				<div class="sec-title mb-45 md-mb-25 inside-abut">
+					<span class="sub-text big-text">@Html.Raw(cultureIsArabic ? about.TaglineArabic : about.TaglineEnglish)</span>
+					<h2 class="title title2 title-color pb-20">
+						@Html.Raw(cultureIsArabic ? about.TitleArabic : about.TitleEnglish)
+					</h2>
+					<p class="desc small2">@Html.Raw(cultureIsArabic ? about.BodyArabic : about.BodyEnglish)</p>
+				</div>
+				<!-- Counter Section Start -->
+			</div>
+		</div>
+	</div>
+</div>
+@if(!string.IsNullOrEmpty(about.VideoPath))
+{
+<div class="rs-project-goals pt-100 md-pt-80">
+	<div class="container">
+		<div class="outcome-project">
+			<video class="shapediv" width="100%" height="100%" controls>
+				<source src="@Html.Raw(about.VideoPath)" type="video/mp4">
+				<source src="@Html.Raw(about.VideoPath)" type="video/ogg">
+				Your browser does not support the video tag.
+			</video>
+		</div>
+	</div>
+</div>
+}
+<div class="rs-faq faq-style1 bg9 pt-150 pb-120 md-pt-130 md-pb-90">
+	<div class="container">
+		<div class="row y-middle">
+			@if (!string.IsNullOrEmpty(about.VisionMissionImagePath))
+			{
+			<div class="col-lg-6 md-mb-50">
+				<div class="approach-img visionmission wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="0s">
+					<img src="@Html.Raw("/" + about.VisionMissionImagePath)" alt="@about.VisionMissionImageAlt">
+				</div>
+			</div>
+			}
+			<div class="col-lg-6 pl-60 md-pl-15">
+				<div class="sec-title3 mb-35">
+					<h2 class="title pb-20">
+						@Html.Raw(cultureIsArabic ? about.VisionMissionHeadingArabic : about.VisionMissionHeadingEnglish)
+					</h2>
+					<p class="desc">
+						@Html.Raw(cultureIsArabic ? about.VisionMissionBodyArabic : about.VisionMissionBodyEnglish)
+					</p>
+				</div>
+				<div class="faq-content">
+					<div id="accordion" class="accordion">
+						<div class="card">
+							<div class="card-header">
+								<a class="card-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true">@Html.Raw(cultureIsArabic ? about.VisionTitleArabic : about.VisionTitleEnglish)</a>
+							</div>
+							<div id="collapseOne" class="collapse show" data-bs-parent="#accordion">
+								<div class="card-body">
+									@Html.Raw(cultureIsArabic ? about.VisionBodyArabic : about.VisionBodyEnglish)
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header">
+								<a class="card-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false">@Html.Raw(cultureIsArabic ? about.MissionTitleArabic : about.MissionTitleEnglish)</a>
+							</div>
+							<div id="collapseTwo" class="collapse" data-bs-parent="#accordion" style="">
+								<div class="card-body">@Html.Raw(cultureIsArabic ? about.MissionBodyArabic : about.MissionBodyEnglish)</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header">
+								<a class="card-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false">@Html.Raw(cultureIsArabic ? about.ValuesTitleArabic : about.ValuesTitleEnglish)</a>
+							</div>
+							<div id="collapseThree" class="collapse" data-bs-parent="#accordion" style="">
+								<div class="card-body values">
+									@Html.Raw(cultureIsArabic ? about.ValuesBodyArabic : about.ValuesBodyEnglish)
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="rs-testimonial testimonial-style2 bg17 pt-120 pb-100 md-pt-80 md-pb-70 mb-100" style="background-image: url(@Html.Raw("/" + about.TestimonialImagePath));">
+	<div class="container">
+		<div class="sec-title text-center mb-45 md-mb-25">
+			<span class="sub-text">@Html.Raw(cultureIsArabic ? about.TestimonialTaglineArabic : about.TestimonialTaglineEnglish)</span>
+			<h2 class="title white-color">
+				@Html.Raw(cultureIsArabic ? about.TestimonialTitleArabic : about.TestimonialTitleEnglish)
+			</h2>
+		</div>
+		<div class="rs-carousel owl-carousel" data-loop="true" data-items="1" data-margin="30" data-autoplay="true" data-hoverpause="false" data-autoplay-timeout="5000" data-smart-speed="800" data-dots="false" data-nav="false" data-nav-speed="false" data-center-mode="false" data-mobile-device="1" data-mobile-device-nav="false" data-mobile-device-dots="false" data-ipad-device="1" data-ipad-device-nav="false" data-ipad-device-dots="true" data-ipad-device2="1" data-ipad-device-nav2="false" data-ipad-device-dots2="true" data-md-device="1" data-md-device-nav="false" data-md-device-dots="true">
+			@foreach(var item in testimonials)
+			{
+			<div class="testi-item-wrap">
+				<div class="item-content">
+						<p>@Html.Raw(cultureIsArabic ? item.MessageArabic : item.MessageEnglish)</p>
+				</div>
+				<div class="testi-content">
+					<div class="image-wrap">
+						<img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt">
+					</div>
+					<div class="testi-information">
+							<div class="testi-name">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</div>
+					</div>
+				</div>
+			</div>
+			}
+		</div>
+	</div>
+	<!-- Partner Section Start -->
+</div>
+
+@section Scripts {
+	<script>
+
+					// Primary slider.
+		var primarySlider = new Splide('#primary_slider', {
+			type: 'fade',
+			heightRatio: 0.5,
+			pagination: false,
+			arrows: false,
+			cover: true,
+			autoplay:true,
+		});
+
+		// Thumbnails slider.
+		var thumbnailSlider = new Splide('#thumbnail_slider', {
+			rewind: true,
+			autoplay:true,
+			slidesToShow: 4,
+			fixedWidth: 300,
+			fixedHeight: 130,
+			isNavigation: true,
+			gap: 10,
+			focus: 'center',
+			pagination: false,
+			cover: true,
+			breakpoints: {
+				'600': {
+					fixedWidth: 200,
+					fixedHeight: 100,
+				}
+			}
+		}).mount();
+
+		// sync the thumbnails slider as a target of primary slider.
+		primarySlider.sync(thumbnailSlider).mount();
+
+	</script>
+}

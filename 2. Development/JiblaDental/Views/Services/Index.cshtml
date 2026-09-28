@@ -1,0 +1,122 @@
+﻿@model HomeViewModel
+
+@{
+	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+	var cultureIsArabic = cultureCode == CultureCode.Arabic;
+	var pageSettings = Model.Pages!.First(x => x.Name == "services");
+}
+@if(Model.IsDetails)
+{
+
+@section seo {
+	<title> @Html.Raw(cultureIsArabic ? Model.Service.SeoTitleArabic : Model.Service.SeoTitleEnglish) </title>
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? Model.Service.SeoDescriptionArabic : Model.Service.SeoDescriptionArabic)">
+}
+
+	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + Model.Service.BannerImagePath));">
+	<div class="container">
+		<div class="breadcrumbs-inner">
+			<h1 class="page-title">
+					@Html.Raw(cultureIsArabic ? Model.Service.BannerTitleArabic : Model.Service.BannerTitleEnglish)
+			</h1>
+		</div>
+	</div>
+	</div>
+
+	<div class="rs-services-single pt-120 pb-120 md-pt-80 md-pb-80">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 md-mb-50 check-lists check-modify1">
+					<div class="services-img mb-60">
+						<img src="@Html.Raw("/" + Model.Service.ImagePath)" alt="@Model.Service.ImageAlt">
+					</div>
+
+					<p class="desc-part pb-26 ">@Html.Raw(cultureIsArabic ? Model.Service.BodyArabic : Model.Service.BodyEnglish)</p>
+					
+				</div>
+				<div class="col-lg-4 pl-36 md-pl-15">
+					<ul class="services-list mb-50">
+						@foreach(var item in Model.Services)
+						{
+							<li><a class="@Html.Raw(item.Id == Model.Service.Id ? "active" : "")" asp-action="Index" asp-controller="Services" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</a></li>
+						}
+					</ul>
+
+					<div class="services-add mb-40">
+						<div class="services-overlay" style="background-image: url(@Html.Raw("/" + Model.Contact.AppointmentImagePath));"></div>
+						<div class="address-wrap mb-20">
+							<div class="icon-part mb-20">
+								<i class="fa fa-phone"></i>
+							</div>
+							<h2 class="title">@Html.Raw(cultureCode == CultureCode.English ? Model.Contact.AppointmentLabelArabic : Model.Contact.AppointmentLabelEnglish)</h2>
+							<div class="divider">
+								<span class="divider-separator"></span>
+							</div>
+							<div class="contact">
+								<a href="tel:@Html.Raw(Model.Contact.AppointmentPhone)">@Html.Raw(Model.Contact.AppointmentPhone)</a>
+							</div>
+						</div>
+					</div>
+					@if (Model.Pages.FirstOrDefault(x => x.Id == 16) != null)
+					{
+						var page = Model.Pages.FirstOrDefault(x => x.Id == 16)!;
+					<div class="btn-part mt-50 md-mt-35">
+							<a class="readon details w-100 text-center" href="@Html.Raw(page.BannerSubTitle)" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a>
+					</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+}
+else
+{
+	int i = 0;
+
+	@section seo {
+	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+	}
+
+	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
+		<div class="container">
+			<div class="breadcrumbs-inner">
+				<h1 class="page-title">
+					@Html.Raw(cultureIsArabic ? pageSettings.BannerTitleArabic : pageSettings.BannerTitleEnglish)
+				</h1>
+			</div>
+		</div>
+	</div>
+
+    <section class="cs_gray_bg">
+        <div class="cs_height_110 cs_height_lg_70"></div>
+        <div class="container">
+            <div class="cs_height_50 cs_height_lg_50"></div>
+            <div class="row cs_row_gap_30 cs_gap_y_30">
+				@foreach(var item in Model.Services)
+				{
+					i++;
+                <div class="col-xl-4 col-lg-4 col-sm-6">
+                    <div class="cs_iconbox cs_style_2 cs_radius_15 cs_hover_layer_2">
+							<div class="cs_iconbox_overlay cs_bg_filed" data-src="@Html.Raw("/" + item.HomeImagePath)" style="background-image: url(@Html.Raw("/" + item.HomeImagePath));"></div>
+                        <div class="cs_iconbox_shape"></div>
+                        <div class="cs_iconbox_header d-flex align-items-center justify-content-between">
+                            <div class="cs_iconbox_icon cs_center">
+									<img src="@Html.Raw("/" + item.IconPath)" alt="@item.IconAlt">
+                            </div>
+								<h3 class="iconbox_index">@Html.Raw(i < 10 ? "0" + i : i)</h3>
+                        </div>
+							<h3 class="cs_iconbox_title"><a asp-action="Index" asp-controller="Services" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</a></h3>
+							<p class="cs_iconbox_subtitle m-0">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</p>
+                    </div>
+                </div>
+                }
+            </div>
+
+        </div>
+        <div class="cs_height_120 cs_height_lg_80"></div>
+    </section>
+
+}

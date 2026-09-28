@@ -1,0 +1,214 @@
+﻿@model HomeViewModel
+
+@{
+	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
+	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
+	var cultureIsArabic = cultureCode == CultureCode.Arabic;
+	var pageSettings = Model.Pages!.First(x => x.Name == "partners");
+	var section = Model.PartnerSection!;
+	var partners = Model.Partners!;
+	var partner = Model.Partner!;
+	var contact = Model.Contact!;
+	var category = Model.PartnerCategories!;
+	int i = 0;
+	int j = 0;
+	int k = 0;
+}
+
+@section seo {
+	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+}
+
+<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
+	<div class="container">
+		<div class="breadcrumbs-inner">
+			<h1 class="page-title">
+				@Html.Raw(cultureIsArabic ? pageSettings.BannerTitleArabic : pageSettings.BannerTitleEnglish)
+			</h1>
+		</div>
+	</div>
+</div>
+
+<div class="rs-services-single pt-120 pb-120 md-pt-80 md-pb-80">
+	<div class="container">
+
+		<div class="row mb-40 align-items-center">
+			<div class="col-lg-12 text-center">
+				<div class="sec-title md-mb-25 partners_insde">
+
+					<h4 class="title-color">
+						@Html.Raw(cultureIsArabic ? section.TitleArabic : section.TitleEnglish)
+					</h4>
+					<p class="">@Html.Raw(cultureIsArabic ? section.BodyArabic : section.BodyEnglish)</p>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div class="row">
+			<div class="tabs_wrapper">
+				<ul class="tabs">
+					@foreach (var item in category)
+					{
+						i++;
+						<li class="@Html.Raw(item.Id == partner.PartnerCategoryId ? "active" : "")" rel="tab-@i">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</li>
+					}
+
+
+					<div class="services-add mb-40 disnone1">
+						<div class="services-overlay"></div>
+						<div class="address-wrap mb-20">
+							<div class="icon-part mb-37">
+								<i class="fa fa-phone"></i>
+							</div>
+							<h2 class="title">@Html.Raw(cultureCode == CultureCode.English ? contact.AppointmentLabelArabic : contact.AppointmentLabelEnglish)</h2>
+							<div class="divider">
+								<span class="divider-separator"></span>
+							</div>
+							<div class="contact">
+								<a href="tel:@Html.Raw(contact.AppointmentPhone)">@Html.Raw(contact.AppointmentPhone)</a>
+							</div>
+						</div>
+					</div>
+				</ul>
+				<div class="tab_container">
+					@foreach (var item in category)
+					{
+						j++;
+						<h3 class="@Html.Raw(item.Id == partner.PartnerCategoryId ? "d_active": "") tab_drawer_heading" rel="tab-@j" >@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</h3>
+						<div id="tab-@j" class="tab_content" style="@Html.Raw(item.Id == partner.PartnerCategoryId ? "display: block;": "display: none;")">
+							<!-- Partners Div Start -->
+							<div class="rs-faq faq-style1 faq-modify1 ">
+								<div class="container">
+									<div class="row">
+										<div class="col-lg-12 md-pr-15 md-mb-20">
+											<div class="faq-content">
+												<div id="accordion" class="accordion">
+													@foreach (var sub in partners.Where(x => x.PartnerCategoryId == item.Id))
+													{
+														k++;
+														<div class="card">
+															<div class="card-header">
+																<a class="card-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapse-@j-@k" aria-expanded="@Html.Raw(sub.Id == partner.Id ? "true": "false")">@Html.Raw(cultureIsArabic ? sub.TitleArabic : sub.TitleEnglish)</a>
+															</div>
+															<div id="collapse-@j-@k" class="collapse @Html.Raw(sub.Id == partner.Id ? "show": "")" data-bs-parent="#accordion">
+																<div class="card-body">
+																	<div class="partners_main1 career-inner-section">
+																		@if (!string.IsNullOrEmpty(sub.ImagePath))
+																		{
+																			<div class="services-img mb-20">
+																				<img src="@Html.Raw("/" + sub.ImagePath)" alt="@sub.ImageAlt">
+																			</div>
+																		}
+																		@if (!string.IsNullOrEmpty(sub.LogoPath))
+																		{
+																			<div class="parnters_logo1">
+																				<img src="@Html.Raw("/" + sub.LogoPath)" alt="@sub.LogoAlt">
+																			</div>
+																		}
+																		<h3>@Html.Raw(cultureIsArabic ? sub.TitleArabic : sub.TitleEnglish)</h3>
+																		<p class="desc-part">@Html.Raw(cultureIsArabic ? sub.BodyArabic : sub.BodyEnglish)</p>
+																		<!-- Counter Section Start -->
+																	</div>
+																</div>
+															</div>
+														</div>
+													}
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+							<!-- Partners Div Start  -->
+
+
+						</div>
+						k = 0;
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+
+		wrapper = $(".tabs");
+		tabs = wrapper.find(".tab");
+		tabToggle = wrapper.find(".tab-toggle");
+
+
+
+		function openTab() {
+			var content = $(this).parent().next(".content"),
+				activeItems = wrapper.find(".active");
+
+			if (!$(this).hasClass('active')) {
+				$(this).add(content).add(activeItems).toggleClass('active');
+				wrapper.css('min-height', content.outerHeight());
+			}
+		};
+
+		tabToggle.on('click', openTab);
+
+		$(window).load(function () {
+			tabToggle.first().trigger('click');
+		});
+
+
+	</script>
+	<script>
+
+		// tabbed content
+		// http://www.entheosweb.com/tutorials/css/tabs.asp
+		// $(".tab_content").hide();
+		// $(".tab_content:first").show();
+
+		/* if in tab mode */
+		$("ul.tabs li").click(function () {
+
+			$(".tab_content").hide();
+			var activeTab = $(this).attr("rel");
+			$("#" + activeTab).fadeIn();
+
+			$("ul.tabs li").removeClass("active");
+			$(this).addClass("active");
+
+			$(".tab_drawer_heading").removeClass("d_active");
+			$(".tab_drawer_heading[rel^='" + activeTab + "']").addClass("d_active");
+
+			/*$(".tabs").css("margin-top", function(){
+			   return ($(".tab_container").outerHeight() - $(".tabs").outerHeight() ) / 2;
+			});*/
+		});
+		$(".tab_container").css("min-height", function () {
+			return $(".tabs").outerHeight() + 50;
+		});
+		/* if in drawer mode */
+		$(".tab_drawer_heading").click(function () {
+
+			$(".tab_content").hide();
+			var d_activeTab = $(this).attr("rel");
+			$("#" + d_activeTab).fadeIn();
+
+			$(".tab_drawer_heading").removeClass("d_active");
+			$(this).addClass("d_active");
+
+			$("ul.tabs li").removeClass("active");
+			$("ul.tabs li[rel^='" + d_activeTab + "']").addClass("active");
+		});
+
+
+		/* Extra class "tab_last"
+		   to add border to bottom side
+		   of last tab
+		$('ul.tabs li').last().addClass("tab_last");*/
+
+
+	</script>
+}

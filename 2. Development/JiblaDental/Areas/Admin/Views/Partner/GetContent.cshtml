@@ -1,0 +1,113 @@
+﻿@model PartnerDto
+@section Title
+{
+    <a asp-action="Get" asp-route-id="@Model.PartnerCategoryId" class="btn btn-primary btn-xs">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+        Entry
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body" id="ModalUser">
+                @using (Html.BeginForm("PostContent", "Partner", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="modal-body row">
+                        <input type="hidden" asp-for="@Model.Id">
+                        <input type="hidden" asp-for="@Model.PartnerCategoryId">
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.TitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.BodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.BodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Short Body(English)</label>
+                            <textarea class="mceDescrEng" asp-for="@Model.ShortBodyEnglish"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Short Body(Arabic)</label>
+                            <textarea class="mceDescrArb" asp-for="@Model.ShortBodyArabic" dir="rtl"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Image (1024 x 384)</label>
+                            @if (!string.IsNullOrEmpty(Model.ImagePath))
+                            {
+                                <br />
+
+                                <img src="/@Model.ImagePath" width="150" alt="image-preview" />
+
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.ImagePath">
+                            <input type="file" class="form-control" asp-for="@Model.Image">
+                            <label class="col-form-label">Image alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.ImageAlt">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Logo (200 x 200)</label>
+                            @if (!string.IsNullOrEmpty(Model.LogoPath))
+                            {
+                                <br />
+                                <img src="/@Model.LogoPath" width="150" alt="image-preview" />
+                                <br />
+                            }
+                            <input type="hidden" asp-for="@Model.LogoPath">
+                            <input type="file" class="form-control" asp-for="@Model.Logo">
+                            <label class="col-form-label">Logo alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.LogoAlt">
+                        </div>
+                        @* <div class="mb-3 col-md-12">
+                            <label class="col-form-label">PageName</label>
+                            <input type="text" class="form-control" asp-for="@Model.PageName">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Seo Title(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.SeoTitleEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Seo Title(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.SeoTitleArabic" dir="rtl">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Seo Description(English)</label>
+                            <input type="text" class="form-control" asp-for="@Model.SeoDescriptionEnglish">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="col-form-label">Seo Description(Arabic)</label>
+                            <input type="text" class="form-control" asp-for="@Model.SeoDescriptionArabic" dir="rtl">
+                        </div> *@
+                        @if (Model.Id is > 0)
+                        {
+                            <div class="mb-3 col-md-12">
+                                <label class="col-form-label">Display Order</label>
+                                <input type="number" min="1" class="form-control" asp-for="@Model.DisplayOrder">
+                            </div>
+                        }
+                        <div class="mb-3 col-md-12">
+                            <label class="form-check-label">Enabled</label>
+                            <input asp-for="@Model.IsActive" type="checkbox" class="form-check-input" />
+                        </div>
+                        <div class="btn-group">
+                            @if (Model.Id is > 0)
+                            {
+                                <button asp-action="DeleteContent" asp-route-id="@Model.Id" onclick="return confirm('Are you sure you want to delete this entity?')" class="btn btn-danger">Delete</button>
+                            }
+                            <button type="submit" id="formsubmit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
