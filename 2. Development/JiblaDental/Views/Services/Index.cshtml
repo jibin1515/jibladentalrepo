@@ -11,7 +11,7 @@
 
 @section seo {
 	<title> @Html.Raw(cultureIsArabic ? Model.Service.SeoTitleArabic : Model.Service.SeoTitleEnglish) </title>
-	<meta name="description" content="@Html.Raw(cultureIsArabic ? Model.Service.SeoDescriptionArabic : Model.Service.SeoDescriptionArabic)">
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? Model.Service.SeoDescriptionArabic : Model.Service.SeoDescriptionEnglish)">
 }
 
 	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + Model.Service.BannerImagePath));">
@@ -29,7 +29,7 @@
 			<div class="row">
 				<div class="col-lg-8 md-mb-50 check-lists check-modify1">
 					<div class="services-img mb-60">
-						<img src="@Html.Raw("/" + Model.Service.ImagePath)" alt="@Model.Service.ImageAlt">
+						<img src="@Html.Raw("/" + Model.Service.ImagePath)" alt="@(Model.Service.ImageAlt ?? "")">
 					</div>
 
 					<p class="desc-part pb-26 ">@Html.Raw(cultureIsArabic ? Model.Service.BodyArabic : Model.Service.BodyEnglish)</p>
@@ -62,7 +62,7 @@
 					{
 						var page = Model.Pages.FirstOrDefault(x => x.Id == 16)!;
 					<div class="btn-part mt-50 md-mt-35">
-							<a class="readon details w-100 text-center" href="@Html.Raw(page.BannerSubTitle)" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a>
+							<a class="readon details w-100 text-center" href="@Html.Raw(page.BannerSubTitle)" target="_blank" rel="noopener noreferrer">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a>
 					</div>
 					}
 				</div>
@@ -77,7 +77,7 @@ else
 
 	@section seo {
 	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
-	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
 	}
 
 	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
@@ -104,7 +104,7 @@ else
                         <div class="cs_iconbox_shape"></div>
                         <div class="cs_iconbox_header d-flex align-items-center justify-content-between">
                             <div class="cs_iconbox_icon cs_center">
-									<img src="@Html.Raw("/" + item.IconPath)" alt="@item.IconAlt">
+									<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.IconPath)" alt="@(item.IconAlt ?? "")">
                             </div>
 								<h3 class="iconbox_index">@Html.Raw(i < 10 ? "0" + i : i)</h3>
                         </div>

@@ -1,0 +1,17 @@
+# Jibla Dental Center
+
+> Jibla Dental Center is a dental clinic in Kuwait offering general and specialist dental care, with English and Arabic versions of the website.
+
+## Main pages
+
+- [Home](https://www.jibladental.com/): Overview of the clinic, services, team and partners
+- [Our Center](https://www.jibladental.com/our-center): About the clinic, vision, mission and values
+- [Our Services](https://www.jibladental.com/services): Dental treatments and services offered
+- [Our Team](https://www.jibladental.com/team): Doctors and specialists by department
+- [Our Partners](https://www.jibladental.com/partners): Corporate and insurance partners
+- [Loyalty Program](https://www.jibladental.com/loyalty-program): Patient loyalty offers
+- [Insurance](https://www.jibladental.com/insurance): Accepted insurance providers
+- [News](https://www.jibladental.com/news): Clinic news and updates
+- [FAQ](https://www.jibladental.com/faq): Frequently asked questions
+- [Careers](https://www.jibladental.com/careers): Open positions
+- [Contact Us](https://www.jibladental.com/contact): Address, phone, email and enquiry form

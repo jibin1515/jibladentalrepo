@@ -16,7 +16,7 @@
 
 @section seo {
 	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
-	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
 }
 
 <div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
@@ -67,7 +67,7 @@
 								<span class="divider-separator"></span>
 							</div>
 							<div class="contact">
-								<a href="tel:@Html.Raw(contact.AppointmentPhone)">@Html.Raw(contact.AppointmentPhone)</a>
+								<a href="tel:@contact.AppointmentPhone">@contact.AppointmentPhone</a>
 							</div>
 						</div>
 					</div>
@@ -98,13 +98,13 @@
 																		@if (!string.IsNullOrEmpty(sub.ImagePath))
 																		{
 																	<div class="services-img mb-20">
-																				<img src="@Html.Raw("/" + sub.ImagePath)" alt="@sub.ImageAlt">
+																				<img loading="lazy" decoding="async" src="@Html.Raw("/" + sub.ImagePath)" alt="@(sub.ImageAlt ?? "")">
 																	</div>
 																	}
 																	@if(!string.IsNullOrEmpty(sub.LogoPath))
 																	{
 																	<div class="parnters_logo1">
-																		<img src="@Html.Raw("/" + sub.LogoPath)" alt="@sub.LogoAlt">
+																		<img loading="lazy" decoding="async" src="@Html.Raw("/" + sub.LogoPath)" alt="@(sub.LogoAlt ?? "")">
 																	</div>
 																	}
 																		<h3>@Html.Raw(cultureIsArabic ? sub.TitleArabic : sub.TitleEnglish)</h3>

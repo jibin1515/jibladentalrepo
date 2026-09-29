@@ -20,12 +20,12 @@
 							<ul class="rs-contact-info">
 								<li>
 									<i class="fi fi-rr-envelope-plus"></i>
-									<a href="mailto:@Html.Raw(contact.HeaderEmail)">@Html.Raw(contact.HeaderEmail)</a>
+									<a href="mailto:@contact.HeaderEmail">@contact.HeaderEmail</a>
 								</li>
 								<li>
 									<i class="fi fi-rr-phone-call"></i>
-									<a href="tel:@Html.Raw(contact.HeaderPhone)">
-										@Html.Raw(contact.HeaderPhone)
+									<a href="tel:@contact.HeaderPhone">
+										@contact.HeaderPhone
 									</a>
 								</li>
 							</ul>
@@ -36,7 +36,7 @@
 							<ul class="clearfix">
 								@foreach(var item in socialmedia)
 								{
-									<li><a href="@item.Url" target="_blank"><i class="fab fa-@Html.Raw(item.Name)"></i></a></li>
+									<li><a href="@item.Url" target="_blank" rel="noopener noreferrer" aria-label="@item.Name"><i class="fab fa-@Html.Raw(item.Name)"></i></a></li>
 								}
 							</ul>
 						</div>
@@ -52,12 +52,12 @@
 					<div class="col-cell header-logo">
 						<div class="logo-area newdisplay1">
 							<a href="~/">
-								<img class="normal-logo" src="/assets/images/white-logo2.png" alt="logo"> <img class="sticky-logo" src="/assets/images/dark-logo.png" alt="logo">
+								<img class="normal-logo" src="/assets/images/white-logo2.png" alt="Jibla Dental Center"> <img class="sticky-logo" src="/assets/images/dark-logo.png" alt="Jibla Dental Center">
 							</a>
 						</div>
 						<div class="logo-area newdisplay2">
 							<a href="~/">
-								<img class="sticky-logo" src="/assets/images/dark-logo2.png" alt="logo">
+								<img class="sticky-logo" src="/assets/images/dark-logo2.png" alt="Jibla Dental Center">
 							</a>
 						</div>
 					</div>
@@ -99,7 +99,7 @@
 								@if(pages.FirstOrDefault(x => x.Id == 16) != null)
 								{
 									var page = pages.FirstOrDefault(x => x.Id == 16)!;
-									<li class="btn-quote"><a class="quote-button __mPS2id" href="@Html.Raw(page.BannerSubTitle)" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
+									<li class="btn-quote"><a class="quote-button __mPS2id" href="@Html.Raw(page.BannerSubTitle)" target="_blank" rel="noopener noreferrer">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
 								}
 								@if (contact.IsArabicEnabled)
 								{
@@ -108,14 +108,14 @@
 										{
 											if (cultureCode == CultureCode.English)
 											{
-												<button asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.Arabic" asp-route-returnUrl="@Context.Request.Path">
-													<img src="/assets/images/kuwait.png" alt="">
+												<button type="submit" aria-label="العربية" asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.Arabic" asp-route-returnUrl="@Context.Request.Path">
+													<img src="/assets/images/kuwait.png" alt="العربية">
 												</button>
 											}
 											else
 											{
-												<button asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.English" asp-route-returnUrl="@Context.Request.Path">
-                                                    <img src="~/ar/assets/images/en.png" />
+												<button type="submit" aria-label="English" asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.English" asp-route-returnUrl="@Context.Request.Path">
+                                                    <img src="~/ar/assets/images/en.png" alt="English">
 												</button>
 											}
 										}
@@ -123,7 +123,7 @@
 								}
 
 								<li class="humburger">
-									<a id="nav-expander" class="nav-expander bar" href="#">
+									<a id="nav-expander" class="nav-expander bar" href="#" role="button" aria-label="Menu">
 										<div class="bar">
 											<span class="dot1"></span>
 											<span class="dot2"></span>
@@ -156,7 +156,7 @@
 			</div>
 			<div class="rs-offcanvas-inner">
 				<div class="canvas-logo">
-					<a href="~/"><img src="/assets/images/dark-logo2.png" alt="logo"></a>
+					<a href="~/"><img src="/assets/images/dark-logo2.png" alt="Jibla Dental Center"></a>
 				</div>
 				<div class="canvas-contact">
 					<div class="address-area">
@@ -166,7 +166,7 @@
 							</div>
 							<div class="info-content">
 								<div class="title">@Html.Raw(cultureCode == CultureCode.English ? "Email" : "بريد إلكتروني")</div>
-								<em><a href="mailto:@Html.Raw(contact.HeaderEmail)">@Html.Raw(contact.HeaderEmail)</a></em>
+								<em><a href="mailto:@contact.HeaderEmail">@contact.HeaderEmail</a></em>
 							</div>
 						</div>
 						<div class="address-list">
@@ -175,14 +175,14 @@
 							</div>
 							<div class="info-content">
 								<div class="title">@Html.Raw(cultureCode == CultureCode.English ? "Phone" : "هاتف")</div>
-								<em>@Html.Raw(contact.HeaderPhone)</em>
+								<em>@contact.HeaderPhone</em>
 							</div>
 						</div>
 					</div>
 					<ul class="social">
 						@foreach (var item in socialmedia)
 						{
-							<li><a href="@item.Url" target="_blank"><i class="fab fa-@item.Name"></i></a></li>
+							<li><a href="@item.Url" target="_blank" rel="noopener noreferrer" aria-label="@item.Name"><i class="fab fa-@item.Name"></i></a></li>
 						}
 					</ul>
 				</div>
@@ -206,14 +206,14 @@
 					{
 						if (cultureCode == CultureCode.English)
 						{
-							<button asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.Arabic" asp-route-returnUrl="@Context.Request.Path">
-								<img src="/assets/images/kuwait.png" alt="">
+							<button type="submit" aria-label="العربية" asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.Arabic" asp-route-returnUrl="@Context.Request.Path">
+								<img src="/assets/images/kuwait.png" alt="العربية">
 							</button>
 						}
 						else
 						{
-							<button asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.English" asp-route-returnUrl="@Context.Request.Path">
-								<img src="~/ar/assets/images/en.png" />
+							<button type="submit" aria-label="English" asp-action="Language" asp-controller="Home" asp-route-code="@CultureCode.English" asp-route-returnUrl="@Context.Request.Path">
+								<img src="~/ar/assets/images/en.png" alt="English">
 							</button>
 						}
 					}
@@ -253,7 +253,7 @@
 						</div>
 						<div class="info-content">
 							<div class="title">@Html.Raw(cultureCode == CultureCode.English ? "Email" : "بريد إلكتروني")</div>
-							<em><a href="mailto:@Html.Raw(contact.HeaderEmail)">@Html.Raw(contact.HeaderEmail)</a></em>
+							<em><a href="mailto:@contact.HeaderEmail">@contact.HeaderEmail</a></em>
 						</div>
 					</div>
 					<div class="address-list">
@@ -262,7 +262,7 @@
 						</div>
 						<div class="info-content">
 							<div class="title">@Html.Raw(cultureCode == CultureCode.English ? "Phone" : "هاتف")</div>
-							<em>@Html.Raw(contact.HeaderPhone)</em>
+							<em>@contact.HeaderPhone</em>
 						</div>
 					</div>
 				</div>
@@ -271,7 +271,7 @@
 			{
 				var page = pages.FirstOrDefault(x => x.Id == 16)!;
 				<ul class="nav-menu">
-					<li class="btn-quote"><a class="readon details book1" href="@Html.Raw(page.BannerSubTitle)" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
+					<li class="btn-quote"><a class="readon details book1" href="@Html.Raw(page.BannerSubTitle)" target="_blank" rel="noopener noreferrer">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a></li>
 				</ul>
 			}
 		</nav>

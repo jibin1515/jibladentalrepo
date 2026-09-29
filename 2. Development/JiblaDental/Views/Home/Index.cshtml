@@ -15,6 +15,11 @@
 	var teams = Model.Teams!;
 	int i = 0;
 	int bannerIndex = 0;
+	// Banner button links saved with the old staging host (atempurl.com) are served as site-relative links
+	string BannerLink(string? url) =>
+		Uri.TryCreate(url, UriKind.Absolute, out var u) && u.Host.EndsWith("atempurl.com", StringComparison.OrdinalIgnoreCase)
+			? u.PathAndQuery
+			: url ?? "";
 	var teamImageUrl = teams != null && teams.Any(x => !string.IsNullOrEmpty(x.ImagePath)) 
 		? "https://www.jibladental.com/" + teams.First(x => !string.IsNullOrEmpty(x.ImagePath)).ImagePath 
 		: "https://www.jibladental.com/assets/images/dark-logo.png";
@@ -41,7 +46,7 @@
 		@foreach (var item in homeBanner)
 		{
 			<div class="slider-direction">
-				<img src="@Html.Raw("/" + item.ImagePath)" />
+				<img src="@Html.Raw("/" + item.ImagePath)" alt="" decoding="async" @Html.Raw(bannerIndex == 0 ? "fetchpriority=\"high\"" : "loading=\"lazy\"") />
 			<div class="container">
 				<div class="content-part text-center">
 						<span class="sl-subtitle wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0s">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</span>
@@ -60,7 +65,7 @@
 						@if (!string.IsNullOrEmpty(item.ButtonUrl))
 						{
 					<div class="slider-bottom wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.9s">
-								<a class="readon slide-touch" href="@item.ButtonUrl">@Html.Raw(cultureIsArabic ? item.ButtonTitleArabic : item.ButtonTitleEnglish)</a>
+								<a class="readon slide-touch" href="@BannerLink(item.ButtonUrl)">@Html.Raw(cultureIsArabic ? item.ButtonTitleArabic : item.ButtonTitleEnglish)</a>
 					</div>
 						}
 				</div>
@@ -78,7 +83,7 @@
 			{
 			<div class="col-lg-6 md-mb-50">
 				<div class="about-img wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="0s">
-						<img src="@Html.Raw("/" + about.HomeImagePath)" alt="@about.HomeImageAlt">
+						<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.HomeImagePath)" alt="@(about.HomeImageAlt ?? "")">
 				</div>
 			</div>
 			}
@@ -112,7 +117,7 @@
 								@if (!string.IsNullOrEmpty(about.Count1ImagePath))
 								{
 								<div class="counter-icon">
-										<img src="@Html.Raw("/" + about.Count1ImagePath)" alt="@about.Count1ImageAlt">
+										<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.Count1ImagePath)" alt="@(about.Count1ImageAlt ?? "")">
 								</div>
 								}
 								<div class="counter-number">
@@ -129,7 +134,7 @@
 								@if (!string.IsNullOrEmpty(about.Count2ImagePath))
 								{
 									<div class="counter-icon">
-										<img src="@Html.Raw("/" + about.Count2ImagePath)" alt="@about.Count2ImageAlt">
+										<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.Count2ImagePath)" alt="@(about.Count2ImageAlt ?? "")">
 									</div>
 								}
 								<div class="counter-number">
@@ -146,7 +151,7 @@
 								@if (!string.IsNullOrEmpty(about.Count3ImagePath))
 								{
 									<div class="counter-icon">
-										<img src="@Html.Raw("/" + about.Count3ImagePath)" alt="@about.Count3ImageAlt">
+										<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.Count3ImagePath)" alt="@(about.Count3ImageAlt ?? "")">
 									</div>
 								}
 								<div class="counter-number">
@@ -188,7 +193,7 @@
 					<div class="cs_iconbox_shape"></div>
 					<div class="cs_iconbox_header d-flex align-items-center justify-content-between">
 						<div class="cs_iconbox_icon cs_center">
-								<img src="@Html.Raw("/" + item.IconPath)" alt="@item.IconAlt">
+								<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.IconPath)" alt="@(item.IconAlt ?? "")">
 						</div>
 							<h3 class="iconbox_index">@Html.Raw(i < 10 ? "0" + i : i)</h3>
 					</div>
@@ -204,7 +209,7 @@
 				@if (Model.Pages.FirstOrDefault(x => x.Id == 16) != null)
 				{
 					var page = Model.Pages.FirstOrDefault(x => x.Id == 16)!;
-					<a class="readon details" href="@Html.Raw(page.BannerSubTitle)" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a>
+					<a class="readon details" href="@Html.Raw(page.BannerSubTitle)" target="_blank" rel="noopener noreferrer">@Html.Raw(cultureCode == CultureCode.English ? page.TitleEnglish : page.TitleArabic)</a>
 				}
 				
 			</div>
@@ -237,7 +242,7 @@
 							@if(!string.IsNullOrEmpty(item.ImagePath))
 							{
 							<div class="image-wrap">
-										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt"></a>
+										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.NameArabic : item.NameEnglish))"></a>
 							</div>
 							}
 							<div class="team-content">
@@ -281,14 +286,14 @@
 								@if (!string.IsNullOrEmpty(item.LogoPath))
 							{
 							<div class="cs_card_thumbnail cs_center">
-								<img src="@Html.Raw("/" + item.LogoPath)" alt="@item.LogoAlt">
+								<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.LogoPath)" alt="@(item.LogoAlt ?? "")">
 							</div>
 							}
 							<div class="cs_card_info partnersdiv">
 									<h3 class="cs_card_title"><a asp-action="Details" asp-controller="Partners" asp-route-id="@item.Id">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</a></h3>
 									<p class="cs_card_subtitle mb-0">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</p>
 							</div>
-								<a class='cs_card_btn cs_center' asp-action="Details" asp-controller="Partners" asp-route-id="@item.Id"><i class="fa-solid fa-circle-chevron-right"></i></a>
+								<a class='cs_card_btn cs_center' asp-action="Details" asp-controller="Partners" asp-route-id="@item.Id" aria-label="@(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)"><i class="fa-solid fa-circle-chevron-right"></i></a>
 						</div>
 					</div>
 					}

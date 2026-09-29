@@ -210,10 +210,12 @@
         });
     }
 
-    //preloader
+    //preloader - hide as soon as the DOM is ready instead of waiting for every image/third-party script
+    $(function () {
+        $("#pre-load").fadeOut(100);
+        $(".pre-loader").fadeOut(100);
+    });
     $(window).on('load', function () {
-        $("#pre-load").delay(200).fadeOut(100);
-        $(".pre-loader").delay(200).fadeOut(100);
 
         if ($(window).width() < 992) {
             $('.rs-menu').css('height', '0');

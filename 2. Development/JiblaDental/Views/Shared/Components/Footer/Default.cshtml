@@ -13,7 +13,7 @@
             <div class="cs_footer_col">
                 <div class="cs_footer_highlight_col cs_accent_bg">
                     <div class="cs_footer_logo">
-                        <img src="/assets/images/white-logo.png" alt="Logo">
+                        <img loading="lazy" decoding="async" src="/assets/images/white-logo.png" alt="Jibla Dental Center">
                     </div>
                     @{
                         var mapUrl = !string.IsNullOrEmpty(contact.GoogleMapLink) 
@@ -22,25 +22,25 @@
                     }
                     <ul class="cs_footer_contact cs_mp_0">
                         <li>
-                            <a href="@mapUrl" target="_blank">
+                            <a href="@mapUrl" target="_blank" rel="noopener noreferrer">
                                 <i class="fa-solid fa-location-dot"></i>
                                 @Html.Raw(cultureCode == CultureCode.English ? contact.AddressEnglish : contact.AddressArabic)
                             </a>
                         </li>
                         <li>
-                            <a href="tel:@Html.Raw(contact.Phone1)"><i class="fa-solid fa-phone"></i> @Html.Raw(contact.Phone1)</a>
+                            <a href="tel:@contact.Phone1"><i class="fa-solid fa-phone"></i> @contact.Phone1</a>
                         </li>
                         <li>
-                            <a href="mailto:@Html.Raw(contact.Email1)"><i class="fa-solid fa-envelope"></i> @Html.Raw(contact.Email1) </a>
+                            <a href="mailto:@contact.Email1"><i class="fa-solid fa-envelope"></i> @contact.Email1 </a>
                         </li>
                         <li class="padleft">
-                            <a class="readon details" href="@mapUrl" target="_blank">@Html.Raw(cultureCode == CultureCode.English ? "See Location On Map" : "انظر الموقع على الخريطة")</a>
+                            <a class="readon details" href="@mapUrl" target="_blank" rel="noopener noreferrer">@Html.Raw(cultureCode == CultureCode.English ? "See Location On Map" : "انظر الموقع على الخريطة")</a>
                         </li>
                     </ul>
                     <div class="cs_social_btns cs_style_1">
                         @foreach (var item in socialmedia)
                         {
-                            <a href="@item.Url" target="_blank" class="cs_center"><i class="fa-brands fa-@Html.Raw(item.Name)"></i></a>
+                            <a href="@item.Url" target="_blank" rel="noopener noreferrer" class="cs_center" aria-label="@item.Name"><i class="fa-brands fa-@Html.Raw(item.Name)"></i></a>
                         }
                     </div>
                 </div>
@@ -113,15 +113,15 @@
                     <div class="textwidget mt-20">
                         @if(!string.IsNullOrEmpty(contact.Certificate1ImagePath))
                         {
-                            <img src="@Html.Raw("/" + contact.Certificate1ImagePath)" alt="@contact.Certificate1ImageAlt">
+                            <img loading="lazy" decoding="async" src="@Html.Raw("/" + contact.Certificate1ImagePath)" alt="@(contact.Certificate1ImageAlt ?? "")">
                         }
                         @if (!string.IsNullOrEmpty(contact.Certificate2ImagePath))
                         {
-                            <img src="@Html.Raw("/" + contact.Certificate2ImagePath)" alt="@contact.Certificate2ImageAlt">
+                            <img loading="lazy" decoding="async" src="@Html.Raw("/" + contact.Certificate2ImagePath)" alt="@(contact.Certificate2ImageAlt ?? "")">
                         }
                         @if (!string.IsNullOrEmpty(contact.Certificate3ImagePath))
                         {
-                            <img src="@Html.Raw("/" + contact.Certificate3ImagePath)" alt="@contact.Certificate3ImageAlt">
+                            <img loading="lazy" decoding="async" src="@Html.Raw("/" + contact.Certificate3ImagePath)" alt="@(contact.Certificate3ImageAlt ?? "")">
                         }
                     </div>
                 </div>

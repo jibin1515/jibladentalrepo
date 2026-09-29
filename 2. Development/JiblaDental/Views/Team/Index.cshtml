@@ -11,8 +11,13 @@
 {
 	
 	@section seo {
-	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
-	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+	@{
+		var seoTeam = Model.Team;
+		var seoTitle = cultureIsArabic ? seoTeam?.SeoTitleArabic : seoTeam?.SeoTitleEnglish;
+		var seoDescription = cultureIsArabic ? seoTeam?.SeoDescriptionArabic : seoTeam?.SeoDescriptionEnglish;
+	}
+	<title> @Html.Raw(!string.IsNullOrWhiteSpace(seoTitle) ? seoTitle : (cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)) </title>
+	<meta name="description" content="@Html.Raw(!string.IsNullOrWhiteSpace(seoDescription) ? seoDescription : (cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish))">
 	}
 
 	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
@@ -33,7 +38,7 @@
 					{
 					<div class="col-lg-5 md-mb-50">
 						<div class="images-part">
-							<img src="@Html.Raw("/" + Model.Team.ImagePath)" alt="@Model.Team.ImageAlt">
+							<img src="@Html.Raw("/" + Model.Team.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(Model.Team.ImageAlt) ? Model.Team.ImageAlt : (cultureIsArabic ? Model.Team.NameArabic : Model.Team.NameEnglish))">
 						</div>
 					</div>
 					}
@@ -48,7 +53,7 @@
 								<ul class="social-info">
 									@foreach(var item in Model.TeamContent.Where(x => x.Type == "social"))
 									{
-									<li><a href="@item.Url" target="_blank"><i class="fab fa-@item.Name.ToLower()"></i></a></li>
+									<li><a href="@item.Url" target="_blank" rel="noopener noreferrer" aria-label="@item.Name"><i class="fab fa-@item.Name.ToLower()"></i></a></li>
 									}
 								</ul>
 							</div>
@@ -142,7 +147,7 @@
 									{
 									<div class="col">
 											<a class="gallery-item" href="@Html.Raw("/" + item.ImagePath)">
-											<img src="@Html.Raw("/" + item.ImagePath)" class="img-fluid" alt="@item.ImageAlt">
+											<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" class="img-fluid" alt="@(item.ImageAlt ?? "")">
 										</a>
 									</div>
 									}
@@ -344,7 +349,7 @@ else
 
 @section seo {
 	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
-	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
 }
 
 <div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
@@ -383,7 +388,7 @@ else
 						<div class="team-item">
 							<div class="team-inner-wrap">
 								<div class="image-wrap">
-										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt"></a>
+										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.NameArabic : item.NameEnglish))"></a>
 								</div>
 								<div class="team-content">
 											<h3 class="team-name"><a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></h3>

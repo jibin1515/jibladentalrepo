@@ -11,8 +11,9 @@
 }
 
 @section seo {
+    <link rel="stylesheet" href="/assets/css/splide.min.css" asp-append-version="true">
     <title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
-    <meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionArabic)">
+    <meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
 }
 
 <div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
@@ -32,7 +33,7 @@
 			<div class="col-lg-4 md-mb-30 ceo_div">
 				@if(!string.IsNullOrEmpty(about.CEOImagePath))
 				{
-				<img src="@Html.Raw("/" + about.CEOImagePath)" alt="@about.CEOImageAlt">
+				<img src="@Html.Raw("/" + about.CEOImagePath)" alt="@(about.CEOImageAlt ?? "")">
 				}
 				<h5>@Html.Raw(cultureIsArabic ? about.CEOTaglineArabic : about.CEOTaglineEnglish)</h5>
 				<h3>@Html.Raw(cultureIsArabic ? about.CEONameArabic : about.CEONameEnglish)</h3>
@@ -66,7 +67,7 @@
 					@foreach (var item in gallery)
 					{
 					<li class="splide__slide bigimg">
-							<img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt">
+							<img src="@Html.Raw("/" + item.ImagePath)" alt="@(item.ImageAlt ?? "")">
 					</li>
 					}
 				</ul>
@@ -80,7 +81,7 @@
 					@foreach (var item in gallery)
 					{
 					<li class="splide__slide">
-							<img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt">
+							<img src="@Html.Raw("/" + item.ImagePath)" alt="@(item.ImageAlt ?? "")">
 					</li>
 					}
 				</ul>
@@ -96,7 +97,7 @@
 	<div class="carousel carousel-main" data-flickity='{"pageDots": false }'>
 		@foreach(var item in gallery)
 		{
-		<div class="carousel-cell"><img src="@Html.Raw("/" + item.ImagePath)" /></div>
+		<div class="carousel-cell"><img src="@Html.Raw("/" + item.ImagePath)" alt="" /></div>
 		}
 	</div>
 
@@ -104,7 +105,7 @@
 		 data-flickity='{ "asNavFor": ".carousel-main", "contain": true, "pageDots": false }'>
 		@foreach (var item in gallery)
 		{
-			<div class="carousel-cell"><img src="@Html.Raw("/" + item.ImagePath)" /></div>
+			<div class="carousel-cell"><img src="@Html.Raw("/" + item.ImagePath)" alt="" /></div>
 		}
 	</div>
 
@@ -117,7 +118,7 @@
 			{
 			<div class="col-lg-6 pr-40 md-pr-15 md-mb-50">
 				<div class="about-img wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="0s">
-					<img src="@Html.Raw("/" + about.ImagePath)" alt="@about.ImageAlt">
+					<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.ImagePath)" alt="@(about.ImageAlt ?? "")">
 				</div>
 			</div>
 			}
@@ -155,7 +156,7 @@
 			{
 			<div class="col-lg-6 md-mb-50">
 				<div class="approach-img visionmission wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="0s">
-					<img src="@Html.Raw("/" + about.VisionMissionImagePath)" alt="@about.VisionMissionImageAlt">
+					<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.VisionMissionImagePath)" alt="@(about.VisionMissionImageAlt ?? "")">
 				</div>
 			</div>
 			}
@@ -222,7 +223,7 @@
 				</div>
 				<div class="testi-content">
 					<div class="image-wrap">
-						<img src="@Html.Raw("/" + item.ImagePath)" alt="@item.ImageAlt">
+						<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(item.ImageAlt ?? "")">
 					</div>
 					<div class="testi-information">
 							<div class="testi-name">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</div>
@@ -236,6 +237,8 @@
 </div>
 
 @section Scripts {
+	<script src="/assets/js/splide.min.js" asp-append-version="true"></script>
+	<script src="/assets/js/flickity.pkgd.min.js" asp-append-version="true"></script>
 	<script>
 
 					// Primary slider.

@@ -15,6 +15,9 @@ builder.Services.ConfigurePersistenceServices(builder.Configuration);
 
 builder.Services.ConfigureApplicationCookie(options => options.LoginPath = "/account/login");
 
+builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
+builder.Services.AddHsts(options => options.MaxAge = TimeSpan.FromDays(365));
+
 builder.Services.AddControllersWithViews(options => { options.EnableEndpointRouting = false; });
 
 var app = builder.Build();
@@ -34,8 +37,27 @@ else
     await DbInitializer.Seed(app);
 }
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["Cross-Origin-Opener-Policy"] = "same-origin-allow-popups";
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    await next();
+});
+
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseResponseCompression();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        // Assets referenced with ?v=<hash> (asp-append-version) are safe to cache for a year;
+        // everything else (images, fonts, uploads) is cached for a week.
+        var versioned = ctx.Context.Request.Query.ContainsKey("v");
+        ctx.Context.Response.Headers["Cache-Control"] = versioned
+            ? "public,max-age=31536000,immutable"
+            : "public,max-age=604800";
+    }
+});
 
 app.UseRouting();
 
