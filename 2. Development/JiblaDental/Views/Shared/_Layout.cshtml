@@ -27,18 +27,15 @@
     <link rel="preload" href="@assetRoot/assets/fonts/helvetica-neue/HelveticaNeueRoman.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="@assetRoot/assets/fonts/helvetica-neue/HelveticaNeueBold.woff2" as="font" type="font/woff2" crossorigin>
 
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/bootstrap.min.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/fonts/font/font-awesome.min.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/uicons-regular-rounded.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/fonts/flaticon.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/owl.carousel.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/slick.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/off-canvas.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/rsmenu-main.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/rs-spacing.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/style2.min.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/style.min.css" asp-append-version="true">
-    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/css/responsive.min.css" asp-append-version="true">
+    @* Icon + button fonts are needed for first paint (the preloader waits for them); fetch them in parallel with the CSS *@
+    <link rel="preload" href="@assetRoot/assets/fonts/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="@assetRoot/assets/fonts/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="@assetRoot/assets/fonts/uicons-regular-rounded.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="@assetRoot/assets/fonts/Flaticon.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="@assetRoot/assets/fonts/JF-Flat-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+    @* One minified bundle instead of 12 render-blocking stylesheets. Rebuild with 2. Development/tools (npm run build) *@
+    <link rel="stylesheet" type="text/css" href="@assetRoot/assets/dist/site.min.css" asp-append-version="true">
 
     @* Non-critical CSS: loaded without blocking first paint *@
     <link rel="stylesheet" href="@assetRoot/assets/css/animate.css" asp-append-version="true" media="print" onload="this.media='all'">
@@ -134,19 +131,8 @@
         <i class="fa fa-angle-up"></i>
     </div>
 
-    <script src="@assetRoot/assets/js/jquery.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/bootstrap.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/jquery.nav.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/jquery.malihu.PageScroll2id.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/owl.carousel.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/slick.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/wow.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/imagesloaded.pkgd.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/jquery.appear.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/odometer.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/jquery.magnific-popup.min.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/main2.js" asp-append-version="true"></script>
-    <script src="@assetRoot/assets/js/main.js" asp-append-version="true"></script>
+    @* jquery, bootstrap, plugins, main2.js and main.js in one file (see 2. Development/tools) *@
+    <script src="@assetRoot/assets/dist/site.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,4 +1,6 @@
 using Application;
+using JiblaDental.Helpers;
+using JiblaDental.Middleware;
 using Identity;
 using Infrastructure;
 using Persistence;
@@ -21,6 +23,8 @@ builder.Services.AddHsts(options => options.MaxAge = TimeSpan.FromDays(365));
 builder.Services.AddControllersWithViews(options => { options.EnableEndpointRouting = false; });
 
 var app = builder.Build();
+
+ImageHelper.Init(app.Environment.WebRootPath);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -46,16 +50,22 @@ app.Use(async (context, next) =>
 
 app.UseHttpsRedirection();
 app.UseResponseCompression();
+app.UseMiddleware<ImageResizeMiddleware>();
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
     {
-        // Assets referenced with ?v=<hash> (asp-append-version) are safe to cache for a year;
-        // everything else (images, fonts, uploads) is cached for a week.
+        // Assets referenced with ?v=<hash> (asp-append-version) never change under the same URL -> cache for a year.
+        // Uploads are saved under a new GUID file name on every change, and font files are never edited in place,
+        // so they are safe to cache for a year too. Everything else (logos, static images) is cached for 30 days.
+        var path = ctx.Context.Request.Path;
         var versioned = ctx.Context.Request.Query.ContainsKey("v");
-        ctx.Context.Response.Headers["Cache-Control"] = versioned
+        var longLived = versioned
+                        || path.StartsWithSegments("/Uploads", StringComparison.OrdinalIgnoreCase)
+                        || Path.GetExtension(ctx.File.Name).ToLowerInvariant() is ".woff2" or ".woff" or ".ttf";
+        ctx.Context.Response.Headers["Cache-Control"] = longLived
             ? "public,max-age=31536000,immutable"
-            : "public,max-age=604800";
+            : "public,max-age=2592000";
     }
 });
 

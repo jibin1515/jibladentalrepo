@@ -9,21 +9,26 @@
     var header = $('.menu-sticky');
     var win = $(window);
 
+    var scrollTicking = false;
     win.on('scroll', function () {
-        var scroll = win.scrollTop();
-        if (scroll < 170) {
-            header.removeClass("sticky");
-        } else {
-            header.addClass("sticky");
-        }
-
-        $("section").each(function () {
-            var elementTop = $(this).offset().top - $('#rs-header').outerHeight();
-            if (scroll >= elementTop) {
-                $(this).addClass('loaded');
+        if (scrollTicking) return;
+        scrollTicking = true;
+        window.requestAnimationFrame(function () {
+            scrollTicking = false;
+            var scroll = win.scrollTop();
+            if (scroll < 170) {
+                header.removeClass("sticky");
+            } else {
+                header.addClass("sticky");
             }
-        });
 
+            var headerHeight = $('#rs-header').outerHeight();
+            $("section:not(.loaded)").each(function () {
+                if (scroll >= $(this).offset().top - headerHeight) {
+                    $(this).addClass('loaded');
+                }
+            });
+        });
     });
 	
     $(document).ready(function () {
@@ -126,8 +131,7 @@
         });
     }
 
-    // wow init
-    new WOW().init();
+    // wow init: done once in main2.js
 
 
     //===== Odometer js
@@ -210,10 +214,26 @@
         });
     }
 
-    //preloader - hide as soon as the DOM is ready instead of waiting for every image/third-party script
+    //preloader - hide once the DOM is ready AND the icon fonts are in (or after 2.5s at most), so icons never pop in
     $(function () {
-        $("#pre-load").fadeOut(100);
-        $(".pre-loader").fadeOut(100);
+        var hidePreloader = function () {
+            $("#pre-load").fadeOut(100);
+            $(".pre-loader").fadeOut(100);
+        };
+        if (window.Promise && document.fonts && document.fonts.load) {
+            var iconFonts = [
+                '900 1em "Font Awesome 6 Free"',
+                '400 1em "Font Awesome 6 Brands"',
+                '1em "Flaticon"',
+                '1em "uicons-regular-rounded"'
+            ].map(function (font) { return document.fonts.load(font).catch(function () { }); });
+            Promise.race([
+                Promise.all(iconFonts),
+                new Promise(function (resolve) { setTimeout(resolve, 2500); })
+            ]).then(hidePreloader, hidePreloader);
+        } else {
+            hidePreloader();
+        }
     });
     $(window).on('load', function () {
 
