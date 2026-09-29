@@ -1,0 +1,94 @@
+/*
+  Site fixes bundled last into assets/dist/site.min.css (see 2. Development/tools/build-assets.mjs).
+  1. Reserve carousel layout before JS initialises it (prevents Cumulative Layout Shift and lets the hero image
+     paint - and become the LCP element - without waiting for owl.carousel/slick to run).
+  2. Colour-contrast fixes for the brand beige (#a6907d) which is only ~3:1 against white.
+*/
+
+/* ---------- 1. Pre-init layout ---------- */
+.rs-slider .slider-direction img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* owl.carousel.css hides .owl-carousel until it is initialised; show the first slide straight away */
+.rs-slider .rs-carousel.owl-carousel:not(.owl-loaded) {
+  display: block;
+  overflow: hidden;
+}
+.rs-slider .rs-carousel.owl-carousel:not(.owl-loaded) > .slider-direction:not(:first-child) {
+  display: none;
+}
+
+/* Team carousel: lay the cards out in one row (3 / 2 / 1 per view, like the owl options in main.js) */
+.rs-team .rs-carousel.owl-carousel:not(.owl-loaded) {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 30px;
+  overflow: hidden;
+}
+.rs-team .rs-carousel.owl-carousel:not(.owl-loaded) > * {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+@media (min-width: 992px) {
+  .rs-team .rs-carousel.owl-carousel:not(.owl-loaded) > * {
+    flex-basis: calc((100% - 30px) / 2);
+  }
+}
+@media (min-width: 1200px) {
+  .rs-team .rs-carousel.owl-carousel:not(.owl-loaded) > * {
+    flex-basis: calc((100% - 60px) / 3);
+  }
+}
+
+/* Partner slick slider (home page): 1 / 2 / 3 slides per view like the slick responsive settings */
+.cs_slider_wrapper.cs_preinit_3:not(.slick-initialized) {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  margin-left: -12px;
+  margin-right: -12px;
+}
+.cs_slider_wrapper.cs_preinit_3:not(.slick-initialized) > .cs_slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+@media (min-width: 769px) {
+  .cs_slider_wrapper.cs_preinit_3:not(.slick-initialized) > .cs_slide {
+    flex-basis: 50%;
+  }
+}
+@media (min-width: 993px) {
+  .cs_slider_wrapper.cs_preinit_3:not(.slick-initialized) > .cs_slide {
+    flex-basis: 33.3333%;
+  }
+}
+.cs_slider .cs_pagination {
+  min-height: 20px;
+}
+
+/* ---------- 2. Colour contrast (white on #7d6754 = 5.3:1, #7d6754 on white = 5.3:1) ---------- */
+.sec-title .sub-text,
+.sec-title3 .sub-text,
+.rs-counter.counter-style3.counter-modify1 .counter-top .rs-counter-list .counter-text .title {
+  color: #7d6754;
+}
+.readon {
+  background: #7d6754;
+}
+.readon:hover,
+.readon.slide-touch:hover,
+.readon.details:hover {
+  background-color: #5c4a3a;
+}
+.cs_footer_bottom {
+  background-color: #7d6754;
+}
+.rs-team.team-style3 .team-item .team-inner-wrap .team-content {
+  background-color: #7d6754;
+}

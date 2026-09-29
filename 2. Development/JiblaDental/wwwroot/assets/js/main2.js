@@ -368,13 +368,15 @@
 })(jQuery); // End of use strict
 
 
-// Accessibility: slick adds ARIA roles that fail audits (tablist without tabs, listbox without a name).
-// Strip them after every init/re-render; behaviour and styling are unaffected.
+// Accessibility: slick adds ARIA roles that fail audits (tablist without tabs, listbox without a name,
+// aria-* on role=presentation). Strip them on init and whenever slick re-applies them while sliding;
+// behaviour and styling do not depend on them.
 (function ($) {
+  var ATTRS = 'role aria-selected aria-controls aria-hidden';
   function cleanSlickAria(ctx) {
     var $root = ctx ? $(ctx) : $(document);
     $root.find('.slick-dots').removeAttr('role');
-    $root.find('.slick-dots li').removeAttr('role aria-selected aria-controls aria-hidden');
+    $root.find('.slick-dots li').removeAttr(ATTRS);
     $root.find('.slick-track').removeAttr('role');
     $root.find('.slick-slide').removeAttr('role');
   }
@@ -382,4 +384,15 @@
     cleanSlickAria(this);
   });
   $(window).on('load', function () { cleanSlickAria(); });
+  $(function () {
+    if (!window.MutationObserver) return;
+    $('.cs_slider').each(function () {
+      var slider = this;
+      new MutationObserver(function () { cleanSlickAria(slider); }).observe(slider, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['role', 'aria-selected', 'aria-controls', 'aria-hidden']
+      });
+    });
+  });
 })(jQuery);

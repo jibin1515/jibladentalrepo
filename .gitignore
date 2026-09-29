@@ -339,3 +339,10 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /2. Development/UniwebApp/wwwroot/Uploads/Shop
+
+# PageSpeed
+PageSpeed Insights.html
+PageSpeed Insights_files
+
+# Resized-image cache generated at runtime by ImageResizeMiddleware
+**/wwwroot/Uploads/_cache/

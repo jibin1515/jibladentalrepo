@@ -20,12 +20,18 @@
 		Uri.TryCreate(url, UriKind.Absolute, out var u) && u.Host.EndsWith("atempurl.com", StringComparison.OrdinalIgnoreCase)
 			? u.PathAndQuery
 			: url ?? "";
+	// Screen-reader/SEO context for generic button labels such as "Read more"
+	string PlainText(string? html) => System.Text.RegularExpressions.Regex.Replace(html ?? "", "<[^>]*>", "").Trim();
 	var teamImageUrl = teams != null && teams.Any(x => !string.IsNullOrEmpty(x.ImagePath)) 
 		? "https://www.jibladental.com/" + teams.First(x => !string.IsNullOrEmpty(x.ImagePath)).ImagePath 
 		: "https://www.jibladental.com/assets/images/dark-logo.png";
 }
 
 @section seo {
+	@if (homeBanner.Any())
+	{
+		@ImageHelper.PreloadImage(homeBanner.First().ImagePath, "100vw")
+	}
 	<title>@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoTitleArabic) ? pageSettings.SeoTitleArabic : "مركز جبلة لطب الأسنان") : "Dental Clinic in Kuwait | Best Dentist in Kuwait | Jibla Dental Center")</title>
 	<meta name="description" content="@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoDescriptionArabic) ? pageSettings.SeoDescriptionArabic : "مركز جبلة لطب الأسنان يقدم رعاية أسنان احترافية من أطباء أسنان ذوي خبرة في الكويت.") : "Looking for a trusted dental clinic in Kuwait? Jibla Dental Center offers professional dental care from experienced dentists. Book your appointment today.")">
 	<meta property="og:title" content="@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoTitleArabic) ? pageSettings.SeoTitleArabic : "Dental Clinic in Kuwait | Dentist in Kuwait | Jibla Dental Center") : "Dental Clinic in Kuwait | Dentist in Kuwait | Jibla Dental Center")">
@@ -46,7 +52,7 @@
 		@foreach (var item in homeBanner)
 		{
 			<div class="slider-direction">
-				<img src="@Html.Raw("/" + item.ImagePath)" alt="" decoding="async" @Html.Raw(bannerIndex == 0 ? "fetchpriority=\"high\"" : "loading=\"lazy\"") />
+				@ImageHelper.Img(item.ImagePath, "", "100vw", null, bannerIndex == 0)
 			<div class="container">
 				<div class="content-part text-center">
 						<span class="sl-subtitle wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0s">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</span>
@@ -65,7 +71,7 @@
 						@if (!string.IsNullOrEmpty(item.ButtonUrl))
 						{
 					<div class="slider-bottom wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.9s">
-								<a class="readon slide-touch" href="@BannerLink(item.ButtonUrl)">@Html.Raw(cultureIsArabic ? item.ButtonTitleArabic : item.ButtonTitleEnglish)</a>
+								<a class="readon slide-touch" href="@BannerLink(item.ButtonUrl)">@Html.Raw(cultureIsArabic ? item.ButtonTitleArabic : item.ButtonTitleEnglish)<span class="visually-hidden"> - @PlainText(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</span></a>
 					</div>
 						}
 				</div>
@@ -83,7 +89,7 @@
 			{
 			<div class="col-lg-6 md-mb-50">
 				<div class="about-img wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="0s">
-						<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.HomeImagePath)" alt="@(about.HomeImageAlt ?? "")">
+						@ImageHelper.Img(about.HomeImagePath, about.HomeImageAlt, "(min-width: 992px) 50vw, 100vw")
 				</div>
 			</div>
 			}
@@ -117,7 +123,7 @@
 								@if (!string.IsNullOrEmpty(about.Count1ImagePath))
 								{
 								<div class="counter-icon">
-										<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.Count1ImagePath)" alt="@(about.Count1ImageAlt ?? "")">
+										@ImageHelper.Img(about.Count1ImagePath, about.Count1ImageAlt, "88px", new[] { 160, 240 })
 								</div>
 								}
 								<div class="counter-number">
@@ -134,7 +140,7 @@
 								@if (!string.IsNullOrEmpty(about.Count2ImagePath))
 								{
 									<div class="counter-icon">
-										<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.Count2ImagePath)" alt="@(about.Count2ImageAlt ?? "")">
+										@ImageHelper.Img(about.Count2ImagePath, about.Count2ImageAlt, "88px", new[] { 160, 240 })
 									</div>
 								}
 								<div class="counter-number">
@@ -151,7 +157,7 @@
 								@if (!string.IsNullOrEmpty(about.Count3ImagePath))
 								{
 									<div class="counter-icon">
-										<img loading="lazy" decoding="async" src="@Html.Raw("/" + about.Count3ImagePath)" alt="@(about.Count3ImageAlt ?? "")">
+										@ImageHelper.Img(about.Count3ImagePath, about.Count3ImageAlt, "88px", new[] { 160, 240 })
 									</div>
 								}
 								<div class="counter-number">
@@ -189,11 +195,11 @@
 				i++;
 			<div class="col-xl-4 col-lg-4 col-sm-6">
 				<div class="cs_iconbox cs_style_2 cs_radius_15 cs_hover_layer_2">
-						<div class="cs_iconbox_overlay cs_bg_filed" data-src="@Html.Raw("/" + item.HomeImagePath)" style="background-image: url(@Html.Raw("/" + item.HomeImagePath));"></div>
+						<div class="cs_iconbox_overlay cs_bg_filed" data-src="@ImageHelper.Resized(item.HomeImagePath, 640)" style="background-image: url(@ImageHelper.Resized(item.HomeImagePath, 640));"></div>
 					<div class="cs_iconbox_shape"></div>
 					<div class="cs_iconbox_header d-flex align-items-center justify-content-between">
 						<div class="cs_iconbox_icon cs_center">
-								<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.IconPath)" alt="@(item.IconAlt ?? "")">
+								@ImageHelper.Img(item.IconPath, item.IconAlt, "80px", new[] { 160, 240 })
 						</div>
 							<h3 class="iconbox_index">@Html.Raw(i < 10 ? "0" + i : i)</h3>
 					</div>
@@ -242,7 +248,7 @@
 							@if(!string.IsNullOrEmpty(item.ImagePath))
 							{
 							<div class="image-wrap">
-										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.NameArabic : item.NameEnglish))"></a>
+										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@ImageHelper.Img(item.ImagePath, !string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.NameArabic : item.NameEnglish), "(min-width: 1200px) 380px, (min-width: 768px) 45vw, 100vw")</a>
 							</div>
 							}
 							<div class="team-content">
@@ -277,7 +283,7 @@
 		<div class="cs_slider cs_style_1 cs_slider_gap_24 position-relative">
 			<div class="cs_slider_container" data-autoplay="0" data-loop="1" data-speed="600" data-center="0"
 				 data-variable-width="0" data-slides-per-view="responsive" data-xs-slides="1" data-sm-slides="2" data-md-slides="3" data-lg-slides="3" data-add-slides="3" dir="rtl">
-				<div class="cs_slider_wrapper cs_remove_overflow">
+				<div class="cs_slider_wrapper cs_remove_overflow cs_preinit_3">
 					@foreach(var item in partners)
 					{
 					<div class="cs_slide">
@@ -286,7 +292,7 @@
 								@if (!string.IsNullOrEmpty(item.LogoPath))
 							{
 							<div class="cs_card_thumbnail cs_center">
-								<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.LogoPath)" alt="@(item.LogoAlt ?? "")">
+								@ImageHelper.Img(item.LogoPath, item.LogoAlt, "200px", new[] { 160, 320 })
 							</div>
 							}
 							<div class="cs_card_info partnersdiv">

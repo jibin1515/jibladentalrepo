@@ -1,0 +1,13 @@
+{
+  "name": "jibladental-asset-build",
+  "private": true,
+  "type": "module",
+  "description": "Builds the bundled/minified site.min.css and site.min.js served by _Layout.cshtml",
+  "scripts": {
+    "build": "node build-assets.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "purgecss": "^7.0.2"
+  }
+}
