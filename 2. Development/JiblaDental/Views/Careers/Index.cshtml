@@ -1,4 +1,4 @@
-﻿@model HomeViewModel
+@model HomeViewModel
 
 @{
 	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
@@ -95,7 +95,11 @@
 										<input class="from-control" type="tel" inputmode="tel" autocomplete="tel" asp-for="@Model.Phone" placeholder="@Html.Raw(cultureIsArabic ? "هاتف" : "Phone")" aria-label="@Html.Raw(cultureIsArabic ? "هاتف" : "Phone")" required>
 									</div>
 									<div class="col-lg-12 mb-25">
+<<<<<<< Updated upstream
 										<input class="from-control" type="file" accept=".pdf,.doc,.docx" asp-for="@Model.AttachedFile" placeholder="@Html.Raw(cultureIsArabic ? "السيرة الذاتية" : "Cv")" aria-label="@Html.Raw(cultureIsArabic ? "السيرة الذاتية" : "Cv")" required>
+=======
+										<input class="from-control" type="file" asp-for="@Model.AttachedFile" accept=".pdf,.doc,.docx" placeholder="@Html.Raw(cultureIsArabic ? "السيرة الذاتية" : "Cv")" required>
+>>>>>>> Stashed changes
 									</div>
 									<div class="col-lg-12 mb-25">
 										<textarea class="from-control" asp-for="@Model.Message" placeholder="@Html.Raw(cultureIsArabic ? "رسالة" : "Message")" aria-label="@Html.Raw(cultureIsArabic ? "رسالة" : "Message")"></textarea>

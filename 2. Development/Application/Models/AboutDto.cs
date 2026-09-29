@@ -1,4 +1,4 @@
-﻿using Application.Helpers;
+using Application.Helpers;
 using Application.Models.Common;
 using Microsoft.AspNetCore.Http;
 
@@ -194,6 +194,7 @@ namespace Application.Models
             set => TestimonialTitle = Localization.Serialize(TestimonialTitleEnglish, value);
         }
 		public string? TestimonialImagePath { get; set; }
+		public string? TestimonialImageAlt { get; set; }
         public IFormFile? TestimonialImage { get; set; }
 		public string? HomeTagline { get; set; }
         public string? HomeTaglineEnglish

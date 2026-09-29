@@ -30,9 +30,24 @@
                         <li>
                             <a href="tel:@contact.Phone1"><i class="fa-solid fa-phone"></i> @contact.Phone1</a>
                         </li>
+<<<<<<< Updated upstream
                         <li>
                             <a href="mailto:@contact.Email1"><i class="fa-solid fa-envelope"></i> @contact.Email1 </a>
                         </li>
+=======
+                        @if (!string.IsNullOrEmpty(contact.Email1))
+                        {
+                            <li>
+                                <a href="mailto:@Html.Raw(contact.Email1)"><i class="fa-solid fa-envelope"></i> @Html.Raw(contact.Email1) </a>
+                            </li>
+                        }
+                        @if (!string.IsNullOrEmpty(contact.Email2))
+                        {
+                            <li>
+                                <a href="mailto:@Html.Raw(contact.Email2)"><i class="fa-solid fa-envelope"></i> @Html.Raw(contact.Email2) </a>
+                            </li>
+                        }
+>>>>>>> Stashed changes
                         <li class="padleft">
                             <a class="readon details" href="@mapUrl" target="_blank" rel="noopener noreferrer">@Html.Raw(cultureCode == CultureCode.English ? "See Location On Map" : "انظر الموقع على الخريطة")</a>
                         </li>

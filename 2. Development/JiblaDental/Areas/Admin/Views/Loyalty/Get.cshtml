@@ -1,4 +1,4 @@
-﻿@model LoyaltyViewModel
+@model LoyaltyViewModel
 @{
     var news = Model.Loyalty!;
     var newsimage = Model.LoyaltyImages!;
@@ -67,6 +67,8 @@
                             }
                             <input type="hidden" asp-for="@Model.BannerImagePath">
                             <input type="file" class="form-control" asp-for="@Model.BannerImage">
+                            <label class="col-form-label">Banner Image Alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.BannerImageAlt">
                         </div>
                         @if (Model.Id > 0)
                         {

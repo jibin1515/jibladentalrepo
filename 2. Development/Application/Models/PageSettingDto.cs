@@ -1,4 +1,4 @@
-﻿using Application.Helpers;
+using Application.Helpers;
 using Application.Models.Common;
 using Microsoft.AspNetCore.Http;
 
@@ -13,6 +13,7 @@ public class PageSettingsDto : OrderableDto
     public string? BannerTitle { get; set; }
     public string? BannerSubTitle { get; set; }
     public string? BannerImagePath { get; set; }
+    public string? BannerImageAlt { get; set; }
     public IFormFile? BannerImage { get; set; }
 	public string? BannerArabicImagePath { get; set; }
 	public IFormFile? BannerArabicImage { get; set; }

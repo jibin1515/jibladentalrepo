@@ -1,4 +1,4 @@
-﻿@model AboutViewModel
+@model AboutViewModel
 @{
     var section = Model.Section;
 }
@@ -215,6 +215,8 @@
                             }
                             <input type="hidden" asp-for="@Model.TestimonialImagePath">
                             <input type="file" class="form-control" asp-for="@Model.TestimonialImage">
+                            <label class="col-form-label">Testimonial Image Alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.TestimonialImageAlt">
                         </div>
                         <br />
                         <div class="card-header"><h4 class="card-title">Home Content Section</h4></div>

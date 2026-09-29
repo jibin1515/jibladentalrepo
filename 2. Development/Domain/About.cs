@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 
 namespace Domain
 {
@@ -29,6 +29,7 @@ namespace Domain
         public string? TestimonialTagline { get; set; }
         public string? TestimonialTitle { get; set; }
         public string? TestimonialImagePath { get; set; }
+        public string? TestimonialImageAlt { get; set; }
         public string? HomeTagline { get; set; }
         public string? HomeTitle { get; set; }
         public string? HomeBody { get; set; }

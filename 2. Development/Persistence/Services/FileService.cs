@@ -1,4 +1,4 @@
-﻿using Application.Interfaces.Persistence;
+using Application.Interfaces.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -15,7 +15,13 @@ public class FileService : IFileService
 
     public async Task<string> SaveFile(IFormFile file, string folderPath, CancellationToken cancellationToken = default)
     {
-        var ext = Path.GetExtension(file.FileName);
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var forbiddenExtensions = new[] { ".exe", ".bat", ".cmd", ".sh", ".php", ".asp", ".aspx", ".cshtml", ".js", ".vbs", ".ps1", ".cgi", ".com", ".scr" };
+        if (forbiddenExtensions.Contains(ext))
+        {
+            throw new InvalidOperationException("File format not allowed for upload.");
+        }
+
         var fileNameWithOutExtension = Guid.NewGuid();
         var fileNameWithExtension = fileNameWithOutExtension + ext;
 

@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 
 namespace Domain;
 
@@ -11,6 +11,7 @@ public class PageSettings : OrderableBaseEntity
     public string? BannerTitle { get; set; }
     public string? BannerSubTitle { get; set; }
     public string? BannerImagePath { get; set; }
+    public string? BannerImageAlt { get; set; }
     public string? BannerArabicImagePath { get; set; }
     public bool ShowOnFooter { get; set; }
 

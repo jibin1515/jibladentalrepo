@@ -1,4 +1,4 @@
-﻿using Application.Constants;
+using Application.Constants;
 using Application.Interfaces.Persistence;
 using Application.Models;
 using Application.Models.Framework;
@@ -35,16 +35,86 @@ public class EnquiryController : Controller
     #region Email
 
     [HttpGet("/admin/enquiry")]
-    public async Task<IActionResult> GetAll(string type = EnquiryTypes.General)
+    public async Task<IActionResult> GetAll(string type = EnquiryTypes.General, long? careerId = null, DateTime? startDate = null, DateTime? endDate = null)
     {
+        var list = await _enquiryRepo.Where(x => x.Purpose == type);
+
+        if (careerId.HasValue && careerId.Value > 0)
+        {
+            list = list.Where(x => x.EntityId == careerId.Value).ToList();
+        }
+
+        if (startDate.HasValue)
+        {
+            list = list.Where(x => x.CreatedOn >= startDate.Value.Date).ToList();
+        }
+
+        if (endDate.HasValue)
+        {
+            var toDate = endDate.Value.Date.AddDays(1).AddTicks(-1);
+            list = list.Where(x => x.CreatedOn <= toDate).ToList();
+        }
+
         return View(new EnquiryViewModel
         {
             Email = _mapper.Map<EmailDto>(await _emailRepo.First(x => x.Purpose == type)),
-            Enquiries = _mapper.Map<List<EnquiryDto>>(await _enquiryRepo.Where(x => x.Purpose == type))
+            Enquiries = _mapper.Map<List<EnquiryDto>>(list)
                 .OrderByDescending(x => x.CreatedOn)
                 .ToList(),
-            Careers = _mapper.Map<List<CareerDto>>(await _careerRepo.GetAll())
+            Careers = _mapper.Map<List<CareerDto>>(await _careerRepo.GetAll()),
+            SelectedCareerId = careerId,
+            StartDate = startDate,
+            EndDate = endDate
         });
+    }
+
+    [HttpPost("/admin/enquiry/export")]
+    public async Task<IActionResult> Export([FromForm] string type, [FromForm] string? selectedIds, [FromForm] long? careerId, [FromForm] DateTime? startDate, [FromForm] DateTime? endDate)
+    {
+        var list = await _enquiryRepo.Where(x => x.Purpose == type);
+
+        if (!string.IsNullOrWhiteSpace(selectedIds))
+        {
+            var ids = selectedIds.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(long.Parse)
+                .ToHashSet();
+            list = list.Where(x => ids.Contains(x.Id)).ToList();
+        }
+        else
+        {
+            if (careerId.HasValue && careerId.Value > 0)
+            {
+                list = list.Where(x => x.EntityId == careerId.Value).ToList();
+            }
+            if (startDate.HasValue)
+            {
+                list = list.Where(x => x.CreatedOn >= startDate.Value.Date).ToList();
+            }
+            if (endDate.HasValue)
+            {
+                var toDate = endDate.Value.Date.AddDays(1).AddTicks(-1);
+                list = list.Where(x => x.CreatedOn <= toDate).ToList();
+            }
+        }
+
+        var careers = (await _careerRepo.GetAll()).ToDictionary(x => x.Id, x => Application.Helpers.Localization.GetEnglish(x.Title) ?? x.Title ?? "");
+
+        var builder = new System.Text.StringBuilder();
+        builder.AppendLine("ID,First Name,Last Name,Full Name,Email,Phone,Applied Position,Sent Date,Message,Attached Resume Path");
+
+        foreach (var item in list)
+        {
+            var careerTitle = (item.EntityId.HasValue && careers.ContainsKey(item.EntityId.Value)) ? careers[item.EntityId.Value] : "";
+            var escape = (string? val) => $"\"{val?.Replace("\"", "\"\"") ?? ""}\"";
+            var sentDate = item.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss");
+            
+            builder.AppendLine($"{item.Id},{escape(item.FirstName)},{escape(item.LastName)},{escape(item.Name)},{escape(item.Email)},{escape(item.Phone)},{escape(careerTitle)},{sentDate},{escape(item.Message)},{escape(item.AttachedFilePath)}");
+        }
+
+        var bytes = System.Text.Encoding.UTF8.GetPreamble().Concat(System.Text.Encoding.UTF8.GetBytes(builder.ToString())).ToArray();
+        var fileName = $"Enquiries_Export_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+
+        return File(bytes, "text/csv", fileName);
     }
 
     [HttpPost("/admin/email")]

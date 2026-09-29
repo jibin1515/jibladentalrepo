@@ -1,4 +1,4 @@
-﻿using Application.Helpers;
+using Application.Helpers;
 using Application.Models.Common;
 using Microsoft.AspNetCore.Http;
 
@@ -88,6 +88,7 @@ namespace Application.Models
             set => BannerTitle = Localization.Serialize(BannerTitleEnglish, value);
         }
         public string? BannerImagePath { get; set; }
+        public string? BannerImageAlt { get; set; }
         public IFormFile? BannerImage { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@using Application.Constants
+@using Application.Constants
 @model EnquiryViewModel
 @{
     ViewBag.Title = "Enquiries";
@@ -75,6 +75,68 @@
 </div>
 
 
+
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0"><i class="fas fa-filter"></i> Filter & Bulk Export Enquiries</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" action="/admin/enquiry" id="filterForm">
+                    <input type="hidden" name="type" value="@email.Purpose" />
+                    <div class="row align-items-end">
+                        @if (email.Purpose == EnquiryTypes.CareerApplication)
+                        {
+                            <div class="col-md-3 mb-2">
+                                <label class="form-label font-weight-bold">Job Position:</label>
+                                <select name="careerId" class="form-control">
+                                    <option value="">-- All Positions --</option>
+                                    @if (Model.Careers != null)
+                                    {
+                                        @foreach (var c in Model.Careers)
+                                        {
+                                            if (Model.SelectedCareerId == c.Id)
+                                            {
+                                                <option value="@c.Id" selected>@c.TitleEnglish</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@c.Id">@c.TitleEnglish</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        }
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label font-weight-bold">Start Date:</label>
+                            <input type="date" name="startDate" class="form-control" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label font-weight-bold">End Date:</label>
+                            <input type="date" name="endDate" class="form-control" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        <div class="col-md-3 mb-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary me-2"><i class="fas fa-search"></i> Filter</button>
+                            <a href="/admin/enquiry?type=@email.Purpose" class="btn btn-secondary me-2"><i class="fas fa-undo"></i> Reset</a>
+                            <button type="button" onclick="exportData()" class="btn btn-success"><i class="fas fa-file-export"></i> Export CSV</button>
+                        </div>
+                    </div>
+                </form>
+
+                <form id="exportForm" method="post" action="/admin/enquiry/export" style="display:none;">
+                    <input type="hidden" name="type" value="@email.Purpose" />
+                    <input type="hidden" name="careerId" value="@Model.SelectedCareerId" />
+                    <input type="hidden" name="startDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
+                    <input type="hidden" name="endDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
+                    <input type="hidden" name="selectedIds" id="exportSelectedIds" value="" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (enquiries.Any() && email.Purpose == EnquiryTypes.General)
 {
     <div class="row">
@@ -89,16 +151,18 @@
                     <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                         <tr>
-                            <th width="30%">Name</th>
-                            <th width="30%">Email</th>
-                            <th width="30%">Sent on</th>
-                            <th width="10%">Action</th>
+                            <th width="5%"><input type="checkbox" id="selectAllEnquiries" onclick="toggleSelectAll(this)" /></th>
+                            <th width="28%">Name</th>
+                            <th width="28%">Email</th>
+                            <th width="28%">Sent on</th>
+                            <th width="11%">Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach (var item in enquiries)
                         {
                             <tr>
+                                <td><input type="checkbox" class="enquiry-checkbox" value="@item.Id" /></td>
                                 <td>@Html.Raw(item.Name)</td>
                                 <td>@Html.Raw(item.Email)</td>
                                 <td>@Html.Raw(item.CreatedOn?.ToShortDateString())</td>
@@ -131,11 +195,12 @@
                     <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                             <tr>
+                                <th width="5%"><input type="checkbox" id="selectAllEnquiries" onclick="toggleSelectAll(this)" /></th>
                                 <th width="15%">First Name</th>
                                 <th width="15%">Last Name</th>
                                 <th width="20%">Post</th>
                                 <th width="25%">Email</th>
-                                <th width="15%">Sent on</th>
+                                <th width="10%">Sent on</th>
                                 <th width="10%">Action</th>
                             </tr>
                         </thead>
@@ -143,6 +208,7 @@
                             @foreach (var item in enquiries)
                             {
                                 <tr>
+                                    <td><input type="checkbox" class="enquiry-checkbox" value="@item.Id" /></td>
                                     <td>@Html.Raw(item.FirstName)</td>
                                     <td>@Html.Raw(item.LastName)</td>
                                     @if(Model.Careers.FirstOrDefault(x => x.Id == item.EntityId) != null)
@@ -184,15 +250,17 @@
                     <table id="datatable" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                             <tr>
+                                <th width="5%"><input type="checkbox" id="selectAllEnquiries" onclick="toggleSelectAll(this)" /></th>
                                 <th width="40%">Email</th>
                                 <th width="30%">Sent on</th>
-                                <th width="30%">Action</th>
+                                <th width="25%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in enquiries)
                             {
                                 <tr>
+                                    <td><input type="checkbox" class="enquiry-checkbox" value="@item.Id" /></td>
                                     <td>@Html.Raw(item.Email)</td>
                                     <td>@Html.Raw(item.CreatedOn?.ToShortDateString())</td>
                                     <td>
@@ -210,3 +278,22 @@
         </div>
     </div>
 }
+
+<script>
+    function toggleSelectAll(master) {
+        var checkboxes = document.querySelectorAll('.enquiry-checkbox');
+        checkboxes.forEach(function(cb) {
+            cb.checked = master.checked;
+        });
+    }
+
+    function exportData() {
+        var selected = [];
+        document.querySelectorAll('.enquiry-checkbox:checked').forEach(function(cb) {
+            selected.push(cb.value);
+        });
+
+        document.getElementById('exportSelectedIds').value = selected.join(',');
+        document.getElementById('exportForm').submit();
+    }
+</script>

@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 
 namespace Domain
 {
@@ -15,6 +15,7 @@ namespace Domain
         public string? IconAlt { get; set; }
         public string? BannerTitle { get; set; }
         public string? BannerImagePath { get; set; }
+        public string? BannerImageAlt { get; set; }
         public bool ShowOnHomePage { get; set; }
         public string? PageName { get; set; }
         public string? SeoTitle { get; set; }

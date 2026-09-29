@@ -1,4 +1,4 @@
-﻿@model ServiceDto
+@model ServiceDto
 @section Title
 {
     <a asp-action="GetSection" class="btn btn-primary btn-xs">
@@ -102,6 +102,8 @@ Entry
                             }
                             <input type="hidden" asp-for="@Model.BannerImagePath">
                             <input type="file" class="form-control" asp-for="@Model.BannerImage">
+                            <label class="col-form-label">Banner Image Alt</label>
+                            <input type="text" class="form-control" asp-for="@Model.BannerImageAlt">
                         </div>                        
                         <div class="mb-3 col-md-12">
                             <label class="form-check-label">Show On Home Page?</label>
