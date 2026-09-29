@@ -1,4 +1,4 @@
-﻿@model HomeViewModel
+@model HomeViewModel
 
 @{
 	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
@@ -10,8 +10,40 @@
 {
 
 @section seo {
-	<title> @Html.Raw(cultureIsArabic ? Model.Service.SeoTitleArabic : Model.Service.SeoTitleEnglish) </title>
-	<meta name="description" content="@Html.Raw(cultureIsArabic ? Model.Service.SeoDescriptionArabic : Model.Service.SeoDescriptionEnglish)">
+	@{
+		var servTitle = cultureIsArabic ? Model.Service.SeoTitleArabic : Model.Service.SeoTitleEnglish;
+		if (string.IsNullOrWhiteSpace(servTitle)) servTitle = cultureIsArabic ? Model.Service.TitleArabic : Model.Service.TitleEnglish;
+		var servDesc = cultureIsArabic ? Model.Service.SeoDescriptionArabic : Model.Service.SeoDescriptionEnglish;
+		if (string.IsNullOrWhiteSpace(servDesc)) servDesc = cultureIsArabic ? Model.Service.ShortBodyArabic : Model.Service.ShortBodyEnglish;
+		var servImg = !string.IsNullOrEmpty(Model.Service.ImagePath) ? ("https://www.jibladental.com/" + Model.Service.ImagePath.TrimStart('/')) : "https://www.jibladental.com/assets/images/og-cover.jpg";
+		var servUrl = "https://www.jibladental.com/services/" + (Model.Service.PageName ?? "");
+	}
+	<title> @Html.Raw(servTitle) </title>
+	<meta name="description" content="@Html.Raw(servDesc)">
+	<meta property="og:title" content="@Html.Raw(servTitle)">
+	<meta property="og:description" content="@Html.Raw(servDesc)">
+	<meta property="og:url" content="@servUrl">
+	<meta property="og:image" content="@servImg">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="@Html.Raw(servTitle)">
+	<meta name="twitter:description" content="@Html.Raw(servDesc)">
+	<meta name="twitter:image" content="@servImg">
+
+	<script type="application/ld+json">
+	{
+	  "@@context": "https://schema.org",
+	  "@@type": "MedicalProcedure",
+	  "name": "@Html.Raw(cultureIsArabic ? Model.Service.TitleArabic : Model.Service.TitleEnglish)",
+	  "description": "@Html.Raw(servDesc)",
+	  "image": "@servImg",
+	  "url": "@servUrl",
+	  "provider": {
+	    "@@type": "MedicalOrganization",
+	    "name": "Jibla Dental Center",
+	    "url": "https://www.jibladental.com/"
+	  }
+	}
+	</script>
 }
 
 	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + Model.Service.BannerImagePath));">
@@ -29,7 +61,7 @@
 			<div class="row">
 				<div class="col-lg-8 md-mb-50 check-lists check-modify1">
 					<div class="services-img mb-60">
-						<img src="@Html.Raw("/" + Model.Service.ImagePath)" alt="@(Model.Service.ImageAlt ?? "")">
+						<img src="@Html.Raw("/" + Model.Service.ImagePath)" alt="@(Model.Service.ImageAlt ?? (cultureIsArabic ? Model.Service.TitleArabic : Model.Service.TitleEnglish))">
 					</div>
 
 					<p class="desc-part pb-26 ">@Html.Raw(cultureIsArabic ? Model.Service.BodyArabic : Model.Service.BodyEnglish)</p>
@@ -78,6 +110,14 @@ else
 	@section seo {
 	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
 	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta property="og:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+	<meta property="og:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta property="og:url" content="https://www.jibladental.com/services">
+	<meta property="og:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+	<meta name="twitter:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta name="twitter:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
 	}
 
 	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">

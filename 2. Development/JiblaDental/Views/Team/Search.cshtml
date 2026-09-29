@@ -1,15 +1,35 @@
-﻿@model HomeViewModel
+@model HomeViewModel
 
 @{
 	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
 	var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
 	var cultureIsArabic = cultureCode == CultureCode.Arabic;
 	var pageSettings = Model.Pages!.First(x => x.Name == "team");
+	string CleanDoctorSlug(string? slug)
+	{
+		if (string.IsNullOrWhiteSpace(slug)) return "";
+		if (Uri.TryCreate(slug, UriKind.Absolute, out var u))
+		{
+			var path = u.AbsolutePath.TrimStart('/');
+			if (path.StartsWith("team/", StringComparison.OrdinalIgnoreCase))
+				return path.Substring(5);
+			return path;
+		}
+		return slug.TrimStart('/');
+	}
 }
 
 @section seo {
 	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
 	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta property="og:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+	<meta property="og:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta property="og:url" content="https://www.jibladental.com/team">
+	<meta property="og:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+	<meta name="twitter:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta name="twitter:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
 }
 
 <div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
@@ -44,17 +64,18 @@
 				<div class="row">
 					@foreach (var item in Model.Teams)
 					{
+						var doctorSlug = CleanDoctorSlug(item.PageName);
 						<div class="col-lg-6 col-md-6 mb-30">
 							<div class="team-item">
 								<div class="team-inner-wrap">
 									<div class="image-wrap">
-										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.NameArabic : item.NameEnglish))"></a>
+										<a asp-action="Index" asp-controller="Team" asp-route-url="@doctorSlug"><img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.NameArabic : item.NameEnglish))"></a>
 									</div>
 									<div class="team-content">
-										<h3 class="team-name"><a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></h3>
+										<h3 class="team-name"><a asp-action="Index" asp-controller="Team" asp-route-url="@doctorSlug">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></h3>
 										<ul class="social-icon">
 											<li>
-												<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</a>
+												<a asp-action="Index" asp-controller="Team" asp-route-url="@doctorSlug">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</a>
 											</li>
 										</ul>
 									</div>

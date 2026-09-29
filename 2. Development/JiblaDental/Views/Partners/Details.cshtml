@@ -1,4 +1,4 @@
-﻿@model HomeViewModel
+@model HomeViewModel
 
 @{
 	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
@@ -18,6 +18,14 @@
 @section seo {
 	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
 	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta property="og:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+	<meta property="og:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta property="og:url" content="https://www.jibladental.com/partners/@partner.Id">
+	<meta property="og:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+	<meta name="twitter:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta name="twitter:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
 }
 
 <div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
@@ -37,9 +45,9 @@
 			<div class="col-lg-12 text-center">
 				<div class="sec-title md-mb-25 partners_insde">
 
-					<h4 class="title-color">
+					<h2 class="title-color">
 						@Html.Raw(cultureIsArabic ? section.TitleArabic : section.TitleEnglish)
-					</h4>
+					</h2>
 					<p class="">@Html.Raw(cultureIsArabic ? section.BodyArabic : section.BodyEnglish)</p>
 				</div>
 			</div>

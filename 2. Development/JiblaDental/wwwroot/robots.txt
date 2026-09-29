@@ -2,3 +2,20 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /account
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://www.jibladental.com/sitemap.xml

@@ -20,9 +20,21 @@
 		Uri.TryCreate(url, UriKind.Absolute, out var u) && u.Host.EndsWith("atempurl.com", StringComparison.OrdinalIgnoreCase)
 			? u.PathAndQuery
 			: url ?? "";
+	string CleanDoctorSlug(string? slug)
+	{
+		if (string.IsNullOrWhiteSpace(slug)) return "";
+		if (Uri.TryCreate(slug, UriKind.Absolute, out var u))
+		{
+			var path = u.AbsolutePath.TrimStart('/');
+			if (path.StartsWith("team/", StringComparison.OrdinalIgnoreCase))
+				return path.Substring(5);
+			return path;
+		}
+		return slug.TrimStart('/');
+	}
 	var teamImageUrl = teams != null && teams.Any(x => !string.IsNullOrEmpty(x.ImagePath)) 
 		? "https://www.jibladental.com/" + teams.First(x => !string.IsNullOrEmpty(x.ImagePath)).ImagePath 
-		: "https://www.jibladental.com/assets/images/dark-logo.png";
+		: "https://www.jibladental.com/assets/images/og-cover.jpg";
 }
 
 @section seo {
@@ -32,13 +44,56 @@
 	<meta property="og:description" content="@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoDescriptionArabic) ? pageSettings.SeoDescriptionArabic : "Looking for a trusted dental clinic in Kuwait? Jibla Dental Center offers professional dental care from experienced dentists in Kuwait.") : "Looking for a trusted dental clinic in Kuwait? Jibla Dental Center offers professional dental care from experienced dentists in Kuwait.")">
 	<meta property="og:url" content="https://www.jibladental.com/">
 	<meta property="og:type" content="website">
-	<meta property="og:site_name" content="Jibla Dental Center">
+	<meta property="og:site_name" content="@(cultureIsArabic ? "مركز جبلة لطب الأسنان" : "Jibla Dental Center")">
 	<meta property="og:image" content="@teamImageUrl">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoTitleArabic) ? pageSettings.SeoTitleArabic : "مركز جبلة لطب الأسنان") : "Dental Clinic in Kuwait | Dentist in Kuwait | Jibla Dental Center")">
+	<meta name="twitter:description" content="@Html.Raw(cultureIsArabic ? (!string.IsNullOrEmpty(pageSettings.SeoDescriptionArabic) ? pageSettings.SeoDescriptionArabic : "مركز جبلة لطب الأسنان يقدم رعاية أسنان احترافية.") : "Looking for a trusted dental clinic in Kuwait? Jibla Dental Center offers professional dental care from experienced dentists in Kuwait.")">
+	<meta name="twitter:image" content="@teamImageUrl">
 	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 	<meta name="geo.position" content="29.361490314925696;47.966395809782824">
 	<meta name="geo.placename" content="Kuwait City, Kuwait">
 	<meta name="geo.region" content="KW-KU">
 	<meta name="ICBM" content="29.361490314925696, 47.966395809782824">
+
+	<script type="application/ld+json">
+	{
+	  "@@context": "https://schema.org",
+	  "@@type": ["Dentist", "MedicalOrganization", "LocalBusiness"],
+	  "name": "Jibla Dental Center",
+	  "alternateName": "مركز جبلة لطب الأسنان",
+	  "url": "https://www.jibladental.com/",
+	  "logo": "https://www.jibladental.com/assets/images/dark-logo.png",
+	  "image": "https://www.jibladental.com/assets/images/og-cover.jpg",
+	  "description": "@Html.Raw(cultureIsArabic ? "مركز جبلة لطب الأسنان يقدم رعاية أسنان احترافية من أطباء أسنان ذوي خبرة في الكويت." : "Looking for a trusted dental clinic in Kuwait? Jibla Dental Center offers professional dental care from experienced dentists.")",
+	  "telephone": "+965 2296 8888",
+	  "priceRange": "$$",
+	  "address": {
+	    "@@type": "PostalAddress",
+	    "streetAddress": "Fahad Al-Salem St, Al-Awqaf Complex",
+	    "addressLocality": "Kuwait City",
+	    "addressRegion": "Al Asimah",
+	    "addressCountry": "KW"
+	  },
+	  "geo": {
+	    "@@type": "GeoCoordinates",
+	    "latitude": 29.361490314925696,
+	    "longitude": 47.966395809782824
+	  },
+	  "openingHoursSpecification": [
+	    {
+	      "@@type": "OpeningHoursSpecification",
+	      "dayOfWeek": ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+	      "opens": "09:00",
+	      "closes": "21:00"
+	    }
+	  ],
+	  "sameAs": [
+	    "https://www.instagram.com/jibladental",
+	    "https://www.facebook.com/jibladental"
+	  ]
+	}
+	</script>
 }
 
 <div class="rs-slider rs-slider-style2">
@@ -46,7 +101,7 @@
 		@foreach (var item in homeBanner)
 		{
 			<div class="slider-direction">
-				<img src="@Html.Raw("/" + item.ImagePath)" alt="" decoding="async" @Html.Raw(bannerIndex == 0 ? "fetchpriority=\"high\"" : "loading=\"lazy\"") />
+				<img src="@Html.Raw("/" + item.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.TitleArabic : item.TitleEnglish))" decoding="async" @Html.Raw(bannerIndex == 0 ? "fetchpriority=\"high\"" : "loading=\"lazy\"") />
 			<div class="container">
 				<div class="content-part text-center">
 						<span class="sl-subtitle wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0s">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</span>
@@ -236,20 +291,21 @@
 
 				@foreach(var item in teams)
 				{
+					var doctorSlug = CleanDoctorSlug(item.PageName);
 				<div class="col-lg-12 col-md-12 mb-30">
 					<div class="team-item">
 						<div class="team-inner-wrap">
 							@if(!string.IsNullOrEmpty(item.ImagePath))
 							{
 							<div class="image-wrap">
-										<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName"><img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.NameArabic : item.NameEnglish))"></a>
+										<a asp-action="Index" asp-controller="Team" asp-route-url="@doctorSlug"><img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(!string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.NameArabic : item.NameEnglish))"></a>
 							</div>
 							}
 							<div class="team-content">
-									<h3 class="team-name"><a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></h3>
+									<h3 class="team-name"><a asp-action="Index" asp-controller="Team" asp-route-url="@doctorSlug">@Html.Raw(cultureIsArabic ? item.NameArabic : item.NameEnglish)</a></h3>
 								<ul class="social-icon">
 									<li>
-											<a asp-action="Index" asp-controller="Team" asp-route-url="@item.PageName">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</a>
+											<a asp-action="Index" asp-controller="Team" asp-route-url="@doctorSlug">@Html.Raw(cultureIsArabic ? item.ShortBodyArabic : item.ShortBodyEnglish)</a>
 									</li>
 								</ul>
 							</div>

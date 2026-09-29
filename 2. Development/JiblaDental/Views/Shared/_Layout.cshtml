@@ -1,14 +1,22 @@
-﻿@{
+@{
     var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
     var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
-    var assetRoot = cultureCode == CultureCode.English ? "" : "/ar";
+    var isArabic = cultureCode == CultureCode.Arabic;
+    var assetRoot = isArabic ? "/ar" : "";
+    var rawPath = Context.Request.Path.Value ?? "/";
+    var canonicalUrl = "https://www.jibladental.com" + (rawPath == "/" ? "/" : rawPath.TrimEnd('/'));
 }
 <!DOCTYPE html>
-<html lang="@(cultureCode == CultureCode.English ? "en" : "ar")">
+<html lang="@(isArabic ? "ar" : "en")" dir="@(isArabic ? "rtl" : "ltr")">
 <head>
     <meta charset="utf-8">
+    <link rel="canonical" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="en" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="ar" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="x-default" href="@canonicalUrl" />
+    <meta property="og:site_name" content="@(isArabic ? "مركز جبلة لطب الأسنان" : "Jibla Dental Center")" />
+    <meta name="twitter:card" content="summary_large_image" />
     @await RenderSectionAsync("seo", false)
-    <link rel="canonical" href="https://www.jibladental.com@(Context.Request.Path.Value == "/" ? "/" : Context.Request.Path.Value!.TrimEnd('/'))" />
 
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">

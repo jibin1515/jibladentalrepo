@@ -1,4 +1,4 @@
-﻿@model HomeViewModel
+@model HomeViewModel
 
 @{
 	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
@@ -14,6 +14,14 @@
     <link rel="stylesheet" href="/assets/css/splide.min.css" asp-append-version="true">
     <title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
     <meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+    <meta property="og:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+    <meta property="og:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+    <meta property="og:url" content="https://www.jibladental.com/about">
+    <meta property="og:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+    <meta name="twitter:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+    <meta name="twitter:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
 }
 
 <div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">

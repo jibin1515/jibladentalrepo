@@ -1,4 +1,4 @@
-﻿@model HomeViewModel
+@model HomeViewModel
 
 @{
 	var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
@@ -9,8 +9,65 @@
 @if (Model.IsDetails)
 {
 	@section seo {
-	<title> @Html.Raw(cultureIsArabic ? Model.News.SeoTitleArabic : Model.News.SeoTitleEnglish) </title>
-	<meta name="description" content="@Html.Raw(cultureIsArabic ? Model.News.SeoDescriptionArabic : Model.News.SeoDescriptionEnglish)">
+	@{
+		var newsTitle = cultureIsArabic ? Model.News.SeoTitleArabic : Model.News.SeoTitleEnglish;
+		if (string.IsNullOrWhiteSpace(newsTitle))
+		{
+			newsTitle = cultureIsArabic ? Model.News.TitleArabic : Model.News.TitleEnglish;
+		}
+		var newsDesc = cultureIsArabic ? Model.News.SeoDescriptionArabic : Model.News.SeoDescriptionEnglish;
+		if (string.IsNullOrWhiteSpace(newsDesc))
+		{
+			newsDesc = cultureIsArabic ? Model.News.ShortBodyArabic : Model.News.ShortBodyEnglish;
+		}
+		var newsImgPath = Model.NewsImages != null && Model.NewsImages.Any()
+			? Model.NewsImages.First().ImagePath
+			: (!string.IsNullOrEmpty(Model.News.HomeImagePath) ? Model.News.HomeImagePath : Model.News.BannerImagePath);
+		var newsImgUrl = !string.IsNullOrEmpty(newsImgPath) ? ("https://www.jibladental.com/" + newsImgPath.TrimStart('/')) : "https://www.jibladental.com/assets/images/og-cover.jpg";
+		var newsUrl = "https://www.jibladental.com/news/" + (Model.News.PageName ?? "");
+		var headlineJson = System.Text.Json.JsonSerializer.Serialize(cultureIsArabic ? Model.News.TitleArabic ?? "" : Model.News.TitleEnglish ?? "");
+		var descJson = System.Text.Json.JsonSerializer.Serialize(newsDesc ?? "");
+		var postDate = cultureIsArabic ? Model.News.PostDateArabic : Model.News.PostDateEnglish;
+	}
+	<title> @Html.Raw(newsTitle) </title>
+	<meta name="description" content="@Html.Raw(newsDesc)">
+	<meta property="og:title" content="@Html.Raw(newsTitle)">
+	<meta property="og:description" content="@Html.Raw(newsDesc)">
+	<meta property="og:url" content="@newsUrl">
+	<meta property="og:type" content="article">
+	<meta property="og:image" content="@newsImgUrl">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="@Html.Raw(newsTitle)">
+	<meta name="twitter:description" content="@Html.Raw(newsDesc)">
+	<meta name="twitter:image" content="@newsImgUrl">
+
+	<script type="application/ld+json">
+	{
+	  "@@context": "https://schema.org",
+	  "@@type": "BlogPosting",
+	  "mainEntityOfPage": {
+	    "@@type": "WebPage",
+	    "@@id": "@newsUrl"
+	  },
+	  "headline": @Html.Raw(headlineJson),
+	  "description": @Html.Raw(descJson),
+	  "image": "@newsImgUrl",
+	  "datePublished": "@Html.Raw(postDate)",
+	  "author": {
+	    "@@type": "Organization",
+	    "name": "Jibla Dental Center",
+	    "url": "https://www.jibladental.com/"
+	  },
+	  "publisher": {
+	    "@@type": "Organization",
+	    "name": "Jibla Dental Center",
+	    "logo": {
+	      "@@type": "ImageObject",
+	      "url": "https://www.jibladental.com/assets/images/dark-logo.png"
+	    }
+	  }
+	}
+	</script>
 	}
 
 	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + Model.News.BannerImagePath));">
@@ -45,7 +102,7 @@
 						@if (Model.NewsImages.Count() > 0)
 						{
 							<div class="bs-img mb-35">
-								<img src="@Html.Raw("/" + Model.NewsImages.FirstOrDefault().ImagePath)" alt="@(Model.NewsImages.FirstOrDefault().ImageAlt ?? "")">
+								<img src="@Html.Raw("/" + Model.NewsImages.FirstOrDefault().ImagePath)" alt="@(Model.NewsImages.FirstOrDefault().ImageAlt ?? (cultureIsArabic ? Model.News.TitleArabic : Model.News.TitleEnglish))">
 							</div>
 						}
 
@@ -64,7 +121,7 @@
 						<div class="col-lg-5 md-mb-50">
 							<div class="blog-details">
 								<div class="bs-img mb-35">
-									<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(item.ImageAlt ?? "")">
+									<img loading="lazy" decoding="async" src="@Html.Raw("/" + item.ImagePath)" alt="@(item.ImageAlt ?? (cultureIsArabic ? Model.News.TitleArabic : Model.News.TitleEnglish))">
 								</div>
 							</div>
 						</div>
@@ -82,6 +139,14 @@ else
 	@section seo {
 	<title> @Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish) </title>
 	<meta name="description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta property="og:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+	<meta property="og:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta property="og:url" content="https://www.jibladental.com/news">
+	<meta property="og:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoTitleArabic : pageSettings.SeoTitleEnglish)">
+	<meta name="twitter:description" content="@Html.Raw(cultureIsArabic ? pageSettings.SeoDescriptionArabic : pageSettings.SeoDescriptionEnglish)">
+	<meta name="twitter:image" content="https://www.jibladental.com/assets/images/og-cover.jpg">
 	}
 
 	<div class="rs-breadcrumbs" style="background: url(@Html.Raw("/" + pageSettings.BannerImagePath));">
