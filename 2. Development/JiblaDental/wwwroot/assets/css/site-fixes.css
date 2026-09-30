@@ -68,8 +68,23 @@
     flex-basis: 33.3333%;
   }
 }
+/* Hidden until slick has laid it out: slick re-parents the slides on init and Chrome reports that as a layout shift */
+.cs_slider_wrapper.cs_preinit_3:not(.slick-initialized) {
+  opacity: 0;
+}
 .cs_slider .cs_pagination {
-  min-height: 20px;
+  min-height: 48px;
+}
+/* owl adds a row of dots under the team carousel once initialised */
+.rs-team .rs-carousel.owl-carousel:not(.owl-loaded) {
+  padding-bottom: 27px;
+}
+
+/* Below-the-fold home sections are not laid out/painted until they are near the viewport (much cheaper first layout).
+   "auto" in contain-intrinsic-size makes the browser remember the real height once rendered. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
 }
 
 /* ---------- 2. Colour contrast (white on #7d6754 = 5.3:1, #7d6754 on white = 5.3:1) ---------- */
@@ -87,6 +102,11 @@
   background-color: #5c4a3a;
 }
 .cs_footer_bottom {
+  background-color: #7d6754;
+}
+.full-width-header .rs-header.header-style2 .expand-btn-inner ul .btn-quote .quote-button,
+.readon.read-more,
+.cs_btn.cs_style_1.cs_color_1 {
   background-color: #7d6754;
 }
 .rs-team.team-style3 .team-item .team-inner-wrap .team-content {

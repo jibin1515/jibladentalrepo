@@ -143,8 +143,8 @@
 			@if (!string.IsNullOrEmpty(about.HomeImagePath))
 			{
 			<div class="col-lg-6 md-mb-50">
-				<div class="about-img wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="0s">
-						@ImageHelper.Img(about.HomeImagePath, about.HomeImageAlt, "(min-width: 992px) 50vw, 100vw")
+				<div class="about-img">
+						@ImageHelper.Img(about.HomeImagePath, about.HomeImageAlt, "(min-width: 992px) 50vw, 100vw", null, false, null, false)
 				</div>
 			</div>
 			}
@@ -231,7 +231,7 @@
 	</div>
 </div>
 
-<section class="cs_gray_bg">
+<section class="cs_gray_bg cv-auto">
 	<div class="container">
 		<div class="cs_section_heading cs_style_1 cs_type_1">
 			<div class="cs_section_heading_left">
@@ -280,7 +280,7 @@
 
 </section>
 
-<div class="rs-team team-style3 mt-100 pt-100 pb-100 md-pt-80 md-pb-80 cs_gray_bg_2">
+<div class="rs-team team-style3 mt-100 pt-100 pb-100 md-pt-80 md-pb-80 cs_gray_bg_2 cv-auto">
 	<div class="container">
 
 		<div class="sec-title text-center mb-45 md-mb-25">
@@ -324,7 +324,7 @@
 	</div>
 </div>
 
-<section class="matp-50 pt-30">
+<section class="matp-50 pt-30 cv-auto">
 	<div class="container">
 		<div class="cs_section_heading cs_style_1 cs_type_1">
 			<div class="cs_section_heading_left">

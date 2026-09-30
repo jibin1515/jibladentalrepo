@@ -86,19 +86,22 @@ namespace JiblaDental.Controllers
             return View(model);
         }
 
+        // Rendered in place (no redirect) so crawlers and tools such as Lighthouse get a real 404/500 status
+        // instead of a redirect to a page that answers 200 ("soft 404").
         [HttpGet("/handle-error/{code:int}")]
-        public IActionResult HandleError(int code)
+        public async Task<IActionResult> HandleError(int code)
         {
             return code switch
             {
-                404 => RedirectToAction(nameof(PageNotFound)),
-                _ => RedirectToAction(nameof(ServerError))
+                404 => await PageNotFound(),
+                _ => await ServerError()
             };
         }
 
         [HttpGet("/page-not-found")]
         public async Task<IActionResult> PageNotFound()
         {
+            Response.StatusCode = StatusCodes.Status404NotFound;
             return View("Error", new ErrorViewModel
             {
                 Pages = _mapper.Map<List<PageSettingsDto>>(await _pageRepo.GetAll()),
@@ -110,6 +113,7 @@ namespace JiblaDental.Controllers
         [HttpGet("/server-error")]
         public async Task<IActionResult> ServerError()
         {
+            Response.StatusCode = StatusCodes.Status500InternalServerError;
             return View("Error", new ErrorViewModel
             {
                 Pages = _mapper.Map<List<PageSettingsDto>>(await _pageRepo.GetAll()),

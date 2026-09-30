@@ -1,3 +1,14 @@
+// Runs fn (with this = el) when el is about to scroll into view, in its own task (keeps main-thread tasks short).
+window.lazyInit = function (el, fn, rootMargin) {
+  if (!('IntersectionObserver' in window)) { fn.call(el); return; }
+  var io = new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    setTimeout(function () { fn.call(el); }, 0);
+  }, { rootMargin: rootMargin || '400px 0px' });
+  io.observe(el);
+};
+
 (function ($) {
   'use strict';
 
@@ -11,20 +22,17 @@
   });
 
   $(function () {
-    mainNav();
-    stickyHeader();
-    dynamicBackground();
-    counterInit();
-    slickInit();
-    modalVideo();
-    scrollUp();
-    tabs();
-    progressBar();
-    review();
-
-    if ($.exists('.wow')) {
-      new WOW().init();
-    }
+    // one initialiser per task so no single task blocks the main thread for long
+    var steps = [
+      mainNav, stickyHeader, dynamicBackground, counterInit, slickInit, modalVideo, scrollUp, tabs, progressBar, review,
+      function () { if ($.exists('.wow')) { new WOW().init(); } },
+    ];
+    (function next() {
+      var step = steps.shift();
+      if (!step) return;
+      step();
+      setTimeout(next, 0);
+    })();
   });
 
   $(window).on('scroll', function () {
@@ -162,7 +170,7 @@
         fadeVar === 1 ? (fadeVar = true) : (fadeVar = false);
 
         // Slick Active Code
-        $slickActive.slick({
+        window.lazyInit($slickActive[0], function () { $slickActive.slick({
           autoplay: autoPlayVar,
 		  autoplay:true,
             rtl: true,
@@ -208,7 +216,7 @@
               },
             },
           ],
-        });
+        }); });
       });
     }
 
@@ -378,7 +386,7 @@
     $root.find('.slick-dots').removeAttr('role');
     $root.find('.slick-dots li').removeAttr(ATTRS);
     $root.find('.slick-track').removeAttr('role');
-    $root.find('.slick-slide').removeAttr('role');
+    $root.find('.slick-slide').removeAttr('role aria-hidden tabindex');
   }
   $(document).on('init reInit afterChange breakpoint setPosition', '.slick-initialized', function () {
     cleanSlickAria(this);
@@ -391,7 +399,7 @@
       new MutationObserver(function () { cleanSlickAria(slider); }).observe(slider, {
         subtree: true,
         attributes: true,
-        attributeFilter: ['role', 'aria-selected', 'aria-controls', 'aria-hidden']
+        attributeFilter: ['role', 'aria-selected', 'aria-controls', 'aria-hidden', 'tabindex']
       });
     });
   });

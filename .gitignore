@@ -343,6 +343,7 @@ healthchecksdb
 # PageSpeed
 PageSpeed Insights.html
 PageSpeed Insights_files
+desktop
 
 # Resized-image cache generated at runtime by ImageResizeMiddleware
 **/wwwroot/Uploads/_cache/

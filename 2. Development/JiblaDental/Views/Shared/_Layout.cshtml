@@ -1,15 +1,21 @@
+@inject IWebHostEnvironment Env
 @{
     var browserLang = Context.Request.Headers["Accept-Language"].ToString().Split(";").FirstOrDefault()?.Split(",").FirstOrDefault();
     var cultureCode = Context.Request.Cookies["CultureCode"] ?? (browserLang == "en" || browserLang == "ar" ? browserLang : "en");
     var isArabic = cultureCode == CultureCode.Arabic;
     var assetRoot = isArabic ? "/ar" : "";
     var rawPath = Context.Request.Path.Value ?? "/";
+    // Home page: inline the above-the-fold CSS and load the full stylesheet without blocking the first paint
+    var criticalCss = !isArabic && (Context.Request.Path.Value ?? "/") == "/" ? CriticalCss.Get(Env.WebRootPath) : null;
+    var deferScripts = !string.IsNullOrEmpty(criticalCss);
     var canonicalUrl = "https://www.jibladental.com" + (rawPath == "/" ? "/" : rawPath.TrimEnd('/'));
 }
 <!DOCTYPE html>
 <html lang="@(isArabic ? "ar" : "en")" dir="@(isArabic ? "rtl" : "ltr")">
 <head>
     <meta charset="utf-8">
+    @* viewport must come before any <link rel="preload" imagesrcset/imagesizes ...>, otherwise "100vw" is resolved against a 980px viewport and the largest srcset candidate is fetched *@
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="canonical" href="@canonicalUrl" />
     <link rel="alternate" hreflang="en" href="@canonicalUrl" />
     <link rel="alternate" hreflang="ar" href="@canonicalUrl" />
@@ -19,7 +25,6 @@
     @await RenderSectionAsync("seo", false)
 
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="/assets/images/fav.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,10 +32,8 @@
     <link rel="preload" href="@assetRoot/assets/fonts/helvetica-neue/HelveticaNeueRoman.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="@assetRoot/assets/fonts/helvetica-neue/HelveticaNeueBold.woff2" as="font" type="font/woff2" crossorigin>
 
-    @* Icon + button fonts are needed for first paint (the preloader waits for them); fetch them in parallel with the CSS *@
-    <link rel="preload" href="@assetRoot/assets/fonts/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="@assetRoot/assets/fonts/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="@assetRoot/assets/fonts/uicons-regular-rounded.woff2" as="font" type="font/woff2" crossorigin>
+    @* Fonts needed for the first paint (header icons, hero arrows, buttons); fetch them in parallel with the CSS *@
+    <link rel="preload" href="@assetRoot/assets/fonts/webfonts/@(isArabic ? "fa-solid-900" : "fa-solid-subset").woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="@assetRoot/assets/fonts/Flaticon.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="@assetRoot/assets/fonts/JF-Flat-regular.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -48,6 +51,13 @@
         <link rel="stylesheet" type="text/css" href="/ar/assets/css/style2.min.css" asp-append-version="true">
         <link rel="stylesheet" type="text/css" href="/ar/style.min.css" asp-append-version="true">
         <link rel="stylesheet" type="text/css" href="/ar/assets/css/responsive.min.css" asp-append-version="true">
+    }
+    else if (!string.IsNullOrEmpty(criticalCss))
+    {
+        <style>@Html.Raw(criticalCss)</style>
+        @* media="print" keeps the full stylesheet low priority and non-blocking; onload switches it on *@
+        <link rel="stylesheet" type="text/css" href="/assets/dist/site.min.css" asp-append-version="true" media="print" onload="this.media='all'">
+        <noscript><link rel="stylesheet" type="text/css" href="/assets/dist/site.min.css" asp-append-version="true"></noscript>
     }
     else
     {
@@ -69,7 +79,8 @@
         <link rel="stylesheet" href="@assetRoot/assets/css/odometer.min.css">
     </noscript>
 
-    @* Analytics/pixels are loaded after first user interaction (or 5s after load) so they don't compete with page rendering *@
+    @* Analytics/pixels (GTM, GA, Meta pixel) are loaded on the first user interaction so they don't compete with page rendering.
+       Visitors who leave without scrolling/tapping are not counted; to also count them, re-add: window.addEventListener('load', function () { setTimeout(loadTracking, 5000); }); *@
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
@@ -103,7 +114,6 @@
             ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'].forEach(function (ev) {
                 window.addEventListener(ev, loadTracking, { once: true, passive: true });
             });
-            window.addEventListener('load', function () { setTimeout(loadTracking, 5000); });
         })();
     </script>
     <noscript>
@@ -121,14 +131,6 @@
     <!-- End Google Tag Manager (noscript) -->
 
     <div class="offwrap"></div>
-
-    <div id="pre-load">
-        <div id="loader" class="loader">
-            <div class="loader-container">
-                <div class="loader-icon"><img src="/assets/images/fav.png" alt="" width="94" height="94"></div>
-            </div>
-        </div>
-    </div>
 
     <div class="main-content">
 
@@ -166,7 +168,10 @@
     }
     else
     {
-        <script src="/assets/dist/site.min.js" asp-append-version="true"></script>
+        @* Home page has no inline scripts that need jQuery, so the scripts can be deferred (they still run in order, before DOMContentLoaded) *@
+        <script src="/assets/dist/site.core.min.js" asp-append-version="true" defer="@deferScripts"></script>
+        <script src="/assets/dist/site.plugins.min.js" asp-append-version="true" defer="@deferScripts"></script>
+        <script src="/assets/dist/site.app.min.js" asp-append-version="true" defer="@deferScripts"></script>
     }
     @await RenderSectionAsync("Scripts", required: false)
 </body>

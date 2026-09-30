@@ -214,26 +214,9 @@
         });
     }
 
-    //preloader - hide once the DOM is ready AND the icon fonts are in (or after 2.5s at most), so icons never pop in
+    //preloader overlay was removed from the layout (CSS is render-blocking / inlined, so there is no flash of unstyled content)
     $(function () {
-        var hidePreloader = function () {
-            $("#pre-load").fadeOut(100);
-            $(".pre-loader").fadeOut(100);
-        };
-        if (window.Promise && document.fonts && document.fonts.load) {
-            var iconFonts = [
-                '900 1em "Font Awesome 6 Free"',
-                '400 1em "Font Awesome 6 Brands"',
-                '1em "Flaticon"',
-                '1em "uicons-regular-rounded"'
-            ].map(function (font) { return document.fonts.load(font).catch(function () { }); });
-            Promise.race([
-                Promise.all(iconFonts),
-                new Promise(function (resolve) { setTimeout(resolve, 2500); })
-            ]).then(hidePreloader, hidePreloader);
-        } else {
-            hidePreloader();
-        }
+        $("#pre-load").remove();
     });
     $(window).on('load', function () {
 
@@ -286,6 +269,8 @@
         OwlCarousel
     -------------------------------------*/
     $('.rs-carousel').each(function () {
+      // hero carousel starts straight away (own task); the others when they are about to scroll into view
+      var init = function () {
         var owlCarousel = $(this),
             loop = owlCarousel.data('loop'),
             items = owlCarousel.data('items'),
@@ -354,6 +339,9 @@
                 }
             }
         });
+      };
+      if ($(this).closest('.rs-slider').length) { var self = this; setTimeout(function () { init.call(self); }, 0); }
+      else { window.lazyInit(this, init); }
     });
 
 

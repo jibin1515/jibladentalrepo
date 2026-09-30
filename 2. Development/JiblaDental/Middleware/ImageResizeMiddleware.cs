@@ -18,6 +18,8 @@ public class ImageResizeMiddleware
 {
     private static readonly HashSet<int> AllowedWidths = new() { 160, 240, 320, 480, 640, 768, 960, 1280, 1600 };
 
+    private const string EncoderVersion = "v2-lossy-webp";
+
     private readonly RequestDelegate _next;
     private readonly IWebHostEnvironment _env;
     private readonly ILogger<ImageResizeMiddleware> _logger;
@@ -32,10 +34,11 @@ public class ImageResizeMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var request = context.Request;
+        var convertOnly = request.Query["f"] == "auto"; // no resize, just WebP for browsers that accept it
+        var width = 0;
         if (!HttpMethods.IsGet(request.Method)
             || !request.Path.StartsWithSegments("/Uploads", StringComparison.OrdinalIgnoreCase)
-            || !int.TryParse(request.Query["w"].ToString(), out var width)
-            || !AllowedWidths.Contains(width))
+            || (!convertOnly && (!int.TryParse(request.Query["w"].ToString(), out width) || !AllowedWidths.Contains(width))))
         {
             await _next(context);
             return;
@@ -64,13 +67,23 @@ public class ImageResizeMiddleware
         try
         {
             var info = await Image.IdentifyAsync(source);
-            if (info.Width <= width)
+            var webp = request.Headers.Accept.ToString().Contains("image/webp", StringComparison.OrdinalIgnoreCase);
+            if (convertOnly)
+            {
+                if (!webp || extension == ".webp")
+                {
+                    await _next(context);
+                    return;
+                }
+
+                width = info.Width;
+            }
+            else if (info.Width <= width)
             {
                 await _next(context);
                 return;
             }
 
-            var webp = request.Headers.Accept.ToString().Contains("image/webp", StringComparison.OrdinalIgnoreCase);
             var outputExtension = webp ? ".webp" : extension;
             var cachePath = await GetOrCreate(source, uploadsRoot, width, outputExtension);
 
@@ -93,7 +106,8 @@ public class ImageResizeMiddleware
 
     private static async Task<string> GetOrCreate(string source, string uploadsRoot, int width, string extension)
     {
-        var key = source + "|" + File.GetLastWriteTimeUtc(source).Ticks + "|" + width + "|" + extension;
+        // bump EncoderVersion whenever the encoder settings change so stale cached files are not reused
+        var key = EncoderVersion + "|" + source + "|" + File.GetLastWriteTimeUtc(source).Ticks + "|" + width + "|" + extension;
         var name = Convert.ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(key))) + extension;
         var cacheDirectory = Path.Combine(uploadsRoot, "_cache");
         var cachePath = Path.Combine(cacheDirectory, name);
@@ -108,7 +122,8 @@ public class ImageResizeMiddleware
                 image.Mutate(x => x.AutoOrient().Resize(width, 0));
                 IImageEncoder encoder = extension switch
                 {
-                    ".webp" => new WebpEncoder { Quality = 75 },
+                    // ImageSharp defaults to lossless WebP, which is often larger than the source PNG/JPEG
+                    ".webp" => new WebpEncoder { FileFormat = WebpFileFormatType.Lossy, Quality = 78 },
                     ".png" => new PngEncoder(),
                     _ => new JpegEncoder { Quality = 78 }
                 };

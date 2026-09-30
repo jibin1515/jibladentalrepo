@@ -21,7 +21,7 @@ public static class ImageHelper
     public static void Init(string webRootPath) => _webRoot = Path.GetFullPath(webRootPath);
 
     public static HtmlString Img(string? path, string? alt, string sizes = "100vw", int[]? widths = null,
-        bool priority = false, string? cssClass = null)
+        bool priority = false, string? cssClass = null, bool lazy = true)
     {
         if (string.IsNullOrWhiteSpace(path)) return HtmlString.Empty;
 
@@ -41,7 +41,8 @@ public static class ImageHelper
         sb.Append(" alt=\"").Append(WebUtility.HtmlEncode(alt ?? "")).Append('"');
         if (!string.IsNullOrEmpty(cssClass)) sb.Append(" class=\"").Append(WebUtility.HtmlEncode(cssClass)).Append('"');
         sb.Append(" decoding=\"async\"");
-        sb.Append(priority ? " fetchpriority=\"high\"" : " loading=\"lazy\"");
+        if (priority) sb.Append(" fetchpriority=\"high\"");
+        else if (lazy) sb.Append(" loading=\"lazy\"");
         sb.Append(" />");
         return new HtmlString(sb.ToString());
     }
@@ -86,7 +87,7 @@ public static class ImageHelper
             .Select(w => url + "?w=" + w + " " + w + "w").ToList();
         if (parts.Count == 0) return null;
 
-        parts.Add(url + " " + size[0] + "w");
+        parts.Add(url + "?f=auto " + size[0] + "w"); // original size, but as WebP when the browser accepts it
         return string.Join(", ", parts);
     }
 

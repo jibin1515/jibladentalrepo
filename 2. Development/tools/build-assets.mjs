@@ -1,6 +1,6 @@
 // Builds the bundled front-end assets served by Views/Shared/_Layout.cshtml:
-//   wwwroot/assets/dist/site.min.css + site.min.js        (English / LTR)
-//   wwwroot/ar/assets/dist/site.min.css + site.min.js     (Arabic / RTL)
+//   wwwroot/assets/dist/site.min.css + site.core/plugins/app.min.js        (English / LTR)
+//   wwwroot/ar/assets/dist/site.min.css + site.core/plugins/app.min.js     (Arabic / RTL)
 //
 // Run after editing any of the source CSS/JS files listed below:
 //   cd "2. Development/tools" && npm install && npm run build
@@ -10,7 +10,7 @@
 //  - rewrites relative url(...) references to absolute /assets/... paths (fonts, images)
 //  - icon fonts (Font Awesome, uicons, Flaticon) use font-display:block so icons never render as fallback glyphs
 //  - purges the unused utility classes from rs-spacing.css (253 KB, almost all unused)
-//  - concatenates the 13 scripts into one file, minifying main.js / main2.js, and drops sourceMappingURL comments
+//  - concatenates the 13 scripts into 3 files (core / plugins / app), minifying main.js / main2.js, and drops sourceMappingURL comments
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -42,21 +42,22 @@ const iconFontCss = new Set([
   'assets/fonts/flaticon.css',
 ]);
 
-const jsFiles = [
-  'assets/js/jquery.min.js',
-  'assets/js/bootstrap.min.js',
-  'assets/js/jquery.nav.js',
-  'assets/js/jquery.malihu.PageScroll2id.min.js',
-  'assets/js/owl.carousel.min.js',
-  'assets/js/slick.min.js',
-  'assets/js/wow.min.js',
-  'assets/js/imagesloaded.pkgd.min.js',
-  'assets/js/jquery.appear.min.js',
-  'assets/js/odometer.min.js',
-  'assets/js/jquery.magnific-popup.min.js',
-  'assets/js/main2.js',
-  'assets/js/main.js',
-];
+// Three files instead of one so the browser runs them as separate tasks (a single 300 KB script is one long task).
+const jsBundles = {
+  core: ['assets/js/jquery.min.js', 'assets/js/bootstrap.min.js'],
+  plugins: [
+    'assets/js/jquery.nav.js',
+    'assets/js/jquery.malihu.PageScroll2id.min.js',
+    'assets/js/owl.carousel.min.js',
+    'assets/js/slick.min.js',
+    'assets/js/wow-lite.js', // replaces wow.min.js (WOW.js)
+    'assets/js/imagesloaded.pkgd.min.js',
+    'assets/js/jquery.appear.min.js',
+    'assets/js/odometer.min.js',
+    'assets/js/jquery.magnific-popup.min.js',
+  ],
+  app: ['assets/js/main2.js', 'assets/js/main.js'],
+};
 const jsToMinify = new Set(['assets/js/main2.js', 'assets/js/main.js']);
 
 const read = (path) => readFileSync(path, 'utf8').replace(/^﻿/, '');
@@ -70,6 +71,23 @@ function walk(dir, extensions, out = []) {
     else if (extensions.some((e) => name.endsWith(e))) out.push(full);
   }
   return out;
+}
+
+
+// Small subsets of the Font Awesome fonts (built by subset-fonts.py). A second @font-face with a unicode-range is
+// declared after each full one, so the icons the site uses come from the tiny file and the full font is only
+// downloaded if an icon outside the subset is ever rendered.
+const subsets = JSON.parse(read(join(here, 'font-subsets.json')));
+function addFontSubsets(css) {
+  return css.replace(/@font-face\s*\{[^}]*\}/g, (rule) => {
+    const match = rule.match(/fa-(solid-900|brands-400)\.woff2/);
+    if (!match) return rule;
+    const which = match[1].startsWith('solid') ? 'solid' : 'brands';
+    const copy = rule
+      .replace(/src\s*:[^;}]*/i, `src:url("../webfonts/fa-${which}-subset.woff2") format("woff2")`)
+      .replace(/\}\s*$/, `;unicode-range:${subsets[which]}}`);
+    return rule + copy;
+  });
 }
 
 /** Make url(...) references absolute so the bundle can live in a different folder than its sources. */
@@ -107,6 +125,7 @@ async function buildCss(root) {
     const path = join(base, file);
     let css = read(path).replace(/@charset\s+["'][^"']*["'];?/gi, '');
     if (file === 'assets/css/rs-spacing.css') css = await purgeSpacing(css);
+    if (file === 'assets/fonts/font/font-awesome.min.css') css = addFontSubsets(css);
     if (iconFontCss.has(file)) css = css.replace(/font-display\s*:\s*swap/gi, 'font-display:block');
     parts.push(`/* ${file} */\n${rewriteUrls(css, dirname(path))}`);
   }
@@ -122,18 +141,20 @@ async function buildCss(root) {
 
 async function buildJs(root) {
   const base = join(wwwroot, root);
-  const parts = [];
-  for (const file of jsFiles) {
-    let js = read(join(base, file));
-    if (jsToMinify.has(file)) js = (await transform(js, { loader: 'js', minify: true, legalComments: 'none' })).code;
-    js = js.replace(/\/\/[#@]\s*sourceMappingURL=.*$/gm, '');
-    parts.push(js);
+  for (const [name, files] of Object.entries(jsBundles)) {
+    const parts = [];
+    for (const file of files) {
+      let js = read(join(base, file));
+      if (jsToMinify.has(file)) js = (await transform(js, { loader: 'js', minify: true, legalComments: 'none' })).code;
+      js = js.replace(/\/\/[#@]\s*sourceMappingURL=.*$/gm, '');
+      parts.push(js);
+    }
+    const code = parts.join('\n;\n');
+    const out = join(base, 'assets', 'dist', `site.${name}.min.js`);
+    mkdirSync(dirname(out), { recursive: true });
+    writeFileSync(out, code);
+    console.log(`${root ? '/' + root + '/' : '/'}assets/dist/site.${name}.min.js  ${(code.length / 1024).toFixed(1)} KiB`);
   }
-  const code = parts.join('\n;\n');
-  const out = join(base, 'assets', 'dist', 'site.min.js');
-  mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, code);
-  console.log(`${root ? '/' + root + '/' : '/'}assets/dist/site.min.js   ${(code.length / 1024).toFixed(1)} KiB`);
 }
 
 for (const root of ['', 'ar']) {
