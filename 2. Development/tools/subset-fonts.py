@@ -57,10 +57,10 @@ for name in own_css:
 css_codes = {c.lower() for c in css_codes}
 
 
-def build(font_file: str, out_name: str, codes: set):
+def build(font_file: str, out_name: str, codes: set, folder: str = "assets/fonts/webfonts"):
     unicodes = sorted(int(c, 16) for c in codes)
     for root in (WWWROOT, WWWROOT / "ar"):
-        source = root / "assets/fonts/webfonts" / font_file
+        source = root / folder / font_file
         if not source.exists():
             continue
         options = subset.Options()
@@ -73,7 +73,7 @@ def build(font_file: str, out_name: str, codes: set):
         subsetter = subset.Subsetter(options)
         subsetter.populate(unicodes=unicodes)
         subsetter.subset(font)
-        target = root / "assets/fonts/webfonts" / out_name
+        target = root / folder / out_name
         font.flavor = "woff2"
         font.save(str(target))
         print(f"{target.relative_to(WWWROOT)}  {target.stat().st_size / 1024:.1f} KiB  ({len(unicodes)} glyphs)")
@@ -90,8 +90,20 @@ solid = build("fa-solid-900.woff2", "fa-solid-subset.woff2", solid_codes)
 brands = build("fa-brands-400.woff2", "fa-brands-subset.woff2", brand_codes)
 
 ranges = lambda values: ",".join(f"U+{v:x}" for v in values)
+
+# uicons (top-bar envelope/phone icons and the calendar icon): only the few used glyphs
+uicons_css = (WWWROOT / "assets/css/uicons-regular-rounded.css").read_text(encoding="utf-8")
+uicons_map = dict(re.findall(r'\.fi-rr-([a-z0-9-]+):before\s*\{\s*content:\s*"\\([0-9a-f]{3,4})"', uicons_css))
+uicons_used = set(re.findall(r"fi-rr-([a-z0-9-]+)", text))
+uicons = build("uicons-regular-rounded.woff2", "uicons-subset.woff2", {uicons_map[n] for n in uicons_used if n in uicons_map} | css_codes, "assets/fonts")  # css_codes: glyphs used by the site's own stylesheets (e.g. the tick before list items)
+
+# Icon rules kept when the CSS bundle is built: every brand glyph (any social network can be chosen in the admin) plus
+# the solid icons the site uses. All other .fa-*::before rules (about 1,800 unused icons) are dropped from the bundle.
+brand_cmap = TTFont(str(WWWROOT / "assets/fonts/webfonts/fa-brands-400.woff2")).getBestCmap()
+keep_codes = sorted({f"{c:x}" for c in brand_cmap} | {c.lower() for c in solid_codes})
 (HERE / "font-subsets.json").write_text(
-    json.dumps({"solid": ranges(solid), "brands": ranges(brands)}, indent=2) + "\n", encoding="utf-8"
+    json.dumps({"solid": ranges(solid), "brands": ranges(brands), "uicons": ranges(uicons), "keepCodes": keep_codes}, indent=2) + "\n",
+    encoding="utf-8",
 )
 missing = sorted(n for n in used_names if n.startswith(("solid", "brands")) is False and n not in class_to_code)
 print("fa-* names used but not in the css map (modifiers such as fa-2x are expected):", ", ".join(missing[:40]))

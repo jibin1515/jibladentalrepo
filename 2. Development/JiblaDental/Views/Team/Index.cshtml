@@ -255,6 +255,7 @@
 		document.addEventListener('DOMContentLoaded', () => {
 		  // --- Create LightBox
 		  const galleryGrid = document.querySelector(".gallery-grid");
+		  if (!galleryGrid) return; // doctors without a gallery have no lightbox to set up
 		  const links = galleryGrid.querySelectorAll("a");
 		  const imgs = galleryGrid.querySelectorAll("img");
 		  const lightboxModal = document.getElementById("lightbox-modal");

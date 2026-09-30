@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 import penthouse from 'penthouse';
 import puppeteer from 'puppeteer-core';
 import { transform } from 'esbuild';
+import { addFontSubsets } from './fa-subset.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dist = resolve(here, '..', 'JiblaDental', 'wwwroot', 'assets', 'dist');
@@ -53,6 +54,9 @@ const merged = parts
     }),
   )
   .join('\n');
-const { code } = await transform([...fontFaces].join('\n') + '\n' + merged, { loader: 'css', minify: true, legalComments: 'none' });
+// Font Awesome: add the embedded subsets so the full 108/147 KB fonts are not fetched for the header icons
+// (the legacy "FontAwesome" / "Font Awesome 5" families are not used above the fold; the full stylesheet still defines them)
+const criticalFontFaces = [...fontFaces].filter((rule) => !/font-family:\s*["']?(FontAwesome|Font Awesome 5)/i.test(rule));
+const { code } = await transform(addFontSubsets(criticalFontFaces.join('\n')) + '\n' + merged, { loader: 'css', minify: true, legalComments: 'none' });
 writeFileSync(join(dist, 'critical.min.css'), code);
 console.log(`critical.min.css  ${(code.length / 1024).toFixed(1)} KiB (site.min.css ${(css.length / 1024).toFixed(1)} KiB)`);

@@ -16,6 +16,7 @@ import { dirname, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { transform } from 'esbuild';
 import { PurgeCSS } from 'purgecss';
+import { addFontSubsets, purgeFaIcons } from './fa-subset.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const project = resolve(here, '..', 'JiblaDental');
@@ -74,22 +75,6 @@ function walk(dir, extensions, out = []) {
 }
 
 
-// Small subsets of the Font Awesome fonts (built by subset-fonts.py). A second @font-face with a unicode-range is
-// declared after each full one, so the icons the site uses come from the tiny file and the full font is only
-// downloaded if an icon outside the subset is ever rendered.
-const subsets = JSON.parse(read(join(here, 'font-subsets.json')));
-function addFontSubsets(css) {
-  return css.replace(/@font-face\s*\{[^}]*\}/g, (rule) => {
-    const match = rule.match(/fa-(solid-900|brands-400)\.woff2/);
-    if (!match) return rule;
-    const which = match[1].startsWith('solid') ? 'solid' : 'brands';
-    const copy = rule
-      .replace(/src\s*:[^;}]*/i, `src:url("../webfonts/fa-${which}-subset.woff2") format("woff2")`)
-      .replace(/\}\s*$/, `;unicode-range:${subsets[which]}}`);
-    return rule + copy;
-  });
-}
-
 /** Make url(...) references absolute so the bundle can live in a different folder than its sources. */
 function rewriteUrls(css, fileDir) {
   return css.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g, (match, quote, url) => {
@@ -125,7 +110,8 @@ async function buildCss(root) {
     const path = join(base, file);
     let css = read(path).replace(/@charset\s+["'][^"']*["'];?/gi, '');
     if (file === 'assets/css/rs-spacing.css') css = await purgeSpacing(css);
-    if (file === 'assets/fonts/font/font-awesome.min.css') css = addFontSubsets(css);
+    if (file === 'assets/fonts/font/font-awesome.min.css') css = addFontSubsets(purgeFaIcons(css));
+    else if (file === 'assets/css/uicons-regular-rounded.css') css = addFontSubsets(css);
     if (iconFontCss.has(file)) css = css.replace(/font-display\s*:\s*swap/gi, 'font-display:block');
     parts.push(`/* ${file} */\n${rewriteUrls(css, dirname(path))}`);
   }

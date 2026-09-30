@@ -16,7 +16,7 @@ namespace JiblaDental.Middleware;
 /// </summary>
 public class ImageResizeMiddleware
 {
-    private static readonly HashSet<int> AllowedWidths = new() { 160, 240, 320, 480, 640, 768, 960, 1280, 1600 };
+    private static readonly HashSet<int> AllowedWidths = new() { 160, 240, 320, 480, 640, 768, 960, 1080, 1200, 1280, 1366, 1440, 1600 };
 
     private const string EncoderVersion = "v2-lossy-webp";
 

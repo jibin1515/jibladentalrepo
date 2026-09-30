@@ -30,9 +30,22 @@ public class FileService : IFileService
         var uploadPath = Path.Combine(_hostingEnvironment.WebRootPath, folderPath);
         if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
 
-        await using var stream =
-            new FileStream(Path.Combine(_hostingEnvironment.WebRootPath, filePath), FileMode.Create);
-        await file.CopyToAsync(stream, cancellationToken);
+        var fullPath = Path.Combine(_hostingEnvironment.WebRootPath, filePath);
+        await using (var stream = new FileStream(fullPath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream, cancellationToken);
+        }
+
+        // Shrink big camera photos etc. in place (same name and format, so the stored path stays valid).
+        // Never fail an upload because of this.
+        try
+        {
+            await ImageOptimizer.OptimizeInPlace(fullPath);
+        }
+        catch
+        {
+            // keep the original file
+        }
 
         return filePath;
     }

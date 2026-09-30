@@ -340,7 +340,22 @@
             }
         });
       };
-      if ($(this).closest('.rs-slider').length) { var self = this; setTimeout(function () { init.call(self); }, 0); }
+      if ($(this).closest('.rs-slider').length) {
+        // The first slide is already visible (pre-init CSS), so the carousel is only started once the page has settled
+        // (2.5 s after load) or as soon as the visitor touches the page - whichever comes first. Its first automatic
+        // slide change is 4 s away anyway, and this keeps the ~150 ms initialisation out of the critical loading phase.
+        var self = this, started = false;
+        var start = function () {
+          if (started) return;
+          started = true;
+          ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) { window.removeEventListener(ev, onGesture); });
+          setTimeout(function () { init.call(self); }, 0);
+        };
+        var onGesture = function (e) { if (!e || e.isTrusted !== false) start(); };
+        ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) { window.addEventListener(ev, onGesture, { passive: true }); });
+        if (document.readyState === 'complete') setTimeout(start, 2500);
+        else window.addEventListener('load', function () { setTimeout(start, 2500); });
+      }
       else { window.lazyInit(this, init); }
     });
 

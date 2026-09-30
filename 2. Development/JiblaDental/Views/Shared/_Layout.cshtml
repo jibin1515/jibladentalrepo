@@ -32,8 +32,11 @@
     <link rel="preload" href="@assetRoot/assets/fonts/helvetica-neue/HelveticaNeueRoman.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="@assetRoot/assets/fonts/helvetica-neue/HelveticaNeueBold.woff2" as="font" type="font/woff2" crossorigin>
 
-    @* Fonts needed for the first paint (header icons, hero arrows, buttons); fetch them in parallel with the CSS *@
-    <link rel="preload" href="@assetRoot/assets/fonts/webfonts/@(isArabic ? "fa-solid-900" : "fa-solid-subset").woff2" as="font" type="font/woff2" crossorigin>
+    @* Fonts needed for the first paint; fetch them in parallel with the CSS. The Font Awesome subsets are embedded in the CSS as data URIs *@
+    @if (isArabic)
+    {
+        <link rel="preload" href="/ar/assets/fonts/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+    }
     <link rel="preload" href="@assetRoot/assets/fonts/Flaticon.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="@assetRoot/assets/fonts/JF-Flat-regular.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -51,6 +54,8 @@
         <link rel="stylesheet" type="text/css" href="/ar/assets/css/style2.min.css" asp-append-version="true">
         <link rel="stylesheet" type="text/css" href="/ar/style.min.css" asp-append-version="true">
         <link rel="stylesheet" type="text/css" href="/ar/assets/css/responsive.min.css" asp-append-version="true">
+        @* carousel pre-init layout (the sliders are initialised lazily), content-visibility and contrast fixes; shared with the English bundle *@
+        <link rel="stylesheet" type="text/css" href="/assets/css/site-fixes.css" asp-append-version="true">
     }
     else if (!string.IsNullOrEmpty(criticalCss))
     {
@@ -79,56 +84,9 @@
         <link rel="stylesheet" href="@assetRoot/assets/css/odometer.min.css">
     </noscript>
 
-    @* Analytics/pixels (GTM, GA, Meta pixel) are loaded on the first user interaction so they don't compete with page rendering.
-       Visitors who leave without scrolling/tapping are not counted; to also count them, re-add: window.addEventListener('load', function () { setTimeout(loadTracking, 5000); }); *@
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-Z73QC5YXXJ');
-        (function () {
-            var loaded = false;
-            function add(src) {
-                var el = document.createElement('script');
-                el.async = true;
-                el.src = src;
-                document.head.appendChild(el);
-            }
-            function loadTracking() {
-                if (loaded) return;
-                loaded = true;
-                add('https://www.googletagmanager.com/gtag/js?id=G-Z73QC5YXXJ');
-                window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-                add('https://www.googletagmanager.com/gtm.js?id=GTM-MCHF697P');
-                !function(f,b,e,v,n,t,s)
-                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                n.queue=[];t=b.createElement(e);t.async=!0;
-                t.src=v;s=b.getElementsByTagName(e)[0];
-                s.parentNode.insertBefore(t,s)}(window, document,'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '2276832839415149');
-                fbq('track', 'PageView');
-            }
-            ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'].forEach(function (ev) {
-                window.addEventListener(ev, loadTracking, { once: true, passive: true });
-            });
-        })();
-    </script>
-    <noscript>
-        <img height="1" width="1" style="display:none"
-             src="https://www.facebook.com/tr?id=2276832839415149&ev=PageView&noscript=1" />
-    </noscript>
+    @* Tracking scripts (Google Tag Manager, Google Analytics, Meta pixel) were removed on request. *@
 </head>
 <body class="defult-home">
-
-    <!-- Google Tag Manager (noscript) -->
-    <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MCHF697P"
-                height="0" width="0" style="display:none;visibility:hidden"></iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->
 
     <div class="offwrap"></div>
 

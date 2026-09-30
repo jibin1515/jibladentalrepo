@@ -110,10 +110,11 @@
 				@ImageHelper.Img(item.ImagePath, !string.IsNullOrWhiteSpace(item.ImageAlt) ? item.ImageAlt : (cultureIsArabic ? item.TitleArabic : item.TitleEnglish), "100vw", null, bannerIndex == 0)
 			<div class="container">
 				<div class="content-part text-center">
-						<span class="sl-subtitle wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0s">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</span>
+						<span class="sl-subtitle@(bannerIndex == 0 ? "" : " wow fadeInLeft")" data-wow-duration="1s" data-wow-delay="0s">@Html.Raw(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</span>
+					@* first slide: no WOW fade-in, so its text and button are visible immediately (better FCP, and stable for contrast audits) *@
 					@if (bannerIndex == 0)
 					{
-						<h1 class="sl-title wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s">
+						<h1 class="sl-title" data-wow-duration="1s" data-wow-delay="0.3s">
 							@Html.Raw(cultureIsArabic ? item.BodyArabic : item.BodyEnglish)
 						</h1>
 					}
@@ -125,7 +126,7 @@
 					}
 						@if (!string.IsNullOrEmpty(item.ButtonUrl))
 						{
-					<div class="slider-bottom wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.9s">
+					<div class="slider-bottom@(bannerIndex == 0 ? "" : " wow fadeInUp")" data-wow-duration="1s" data-wow-delay="0.9s">
 								<a class="readon slide-touch" href="@BannerLink(item.ButtonUrl)">@Html.Raw(cultureIsArabic ? item.ButtonTitleArabic : item.ButtonTitleEnglish)<span class="visually-hidden"> - @PlainText(cultureIsArabic ? item.TitleArabic : item.TitleEnglish)</span></a>
 					</div>
 						}

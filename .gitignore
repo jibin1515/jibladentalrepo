@@ -347,3 +347,4 @@ desktop
 
 # Resized-image cache generated at runtime by ImageResizeMiddleware
 **/wwwroot/Uploads/_cache/
+**/wwwroot/Uploads/_backup/

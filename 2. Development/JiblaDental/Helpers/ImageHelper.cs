@@ -12,7 +12,7 @@ namespace JiblaDental.Helpers;
 /// </summary>
 public static class ImageHelper
 {
-    public static readonly int[] DefaultWidths = { 320, 480, 640, 768, 960, 1280, 1600 };
+    public static readonly int[] DefaultWidths = { 320, 480, 640, 768, 960, 1080, 1200, 1366, 1440, 1600 };
 
     private static readonly string[] ResizableExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
     private static readonly ConcurrentDictionary<string, int[]> Sizes = new(StringComparer.OrdinalIgnoreCase);

@@ -164,7 +164,7 @@
 
 		tabToggle.on('click', openTab);
 
-		$(window).load(function () {
+		$(window).on('load', function () {
 			tabToggle.first().trigger('click');
 		});
 
