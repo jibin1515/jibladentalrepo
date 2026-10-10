@@ -1,0 +1,118 @@
+@{
+    ViewBag.Title = "Visits & Map";
+}
+
+@section Title
+{
+    Visits &amp; Map
+}
+
+@section css
+{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" />
+    <style>
+        .vm { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .vm .sub { color: #6b7280; margin: 0 0 1rem; }
+        .vm .filters { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: flex-end; margin-bottom: 1rem; }
+        .vm .pill { border: 1px solid #e5e7eb; background: #fff; border-radius: 999px; padding: .5rem 1rem; font-size: .9rem; cursor: pointer; }
+        .vm select.pill { appearance: auto; }
+        .vm .cardx { background: #fff; border-radius: 1rem; padding: 1.25rem; box-shadow: 0 4px 18px rgba(30,60,110,.07); height: 100%; }
+        .vm .cardx h6 { font-weight: 700; margin-bottom: 1rem; }
+        .vm .stat { display: flex; align-items: center; gap: 1rem; }
+        .vm .stat .num { font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
+        .vm .stat .lbl { color: #6b7280; font-size: .85rem; }
+        .vm .stat .ic { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-size: 1.4rem; }
+        .vm .bar-row { margin-bottom: .9rem; }
+        .vm .bar-row .top { display: flex; justify-content: space-between; font-size: .92rem; }
+        .vm .bar-row .top span:last-child { color: #6b7280; font-size: .85rem; }
+        .vm .track { height: 7px; border-radius: 6px; background: #eaf4fb; margin-top: .3rem; }
+        .vm .fill { height: 100%; border-radius: 6px; }
+        .vm .cc { font-size: .65rem; font-weight: 700; color: #1e3a5f; margin-right: .4rem; }
+        .vm #map { height: 460px; border-radius: 1rem; }
+        .vm .legend { display: flex; gap: 1rem; font-size: .85rem; color: #6b7280; }
+        .vm .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: .3rem; }
+        .vm table { width: 100%; font-size: .9rem; }
+        .vm th { color: #6b7280; font-weight: 500; padding: .7rem .5rem; background: #f8fbfd; }
+        .vm td { padding: .7rem .5rem; border-bottom: 1px solid #eef1f4; }
+        .vm .badge-new, .vm .badge-ret { font-size: .72rem; font-weight: 600; padding: .15rem .6rem; border-radius: 999px; }
+        .vm .badge-new { background: #fdf0e0; color: #b45f06; }
+        .vm .badge-ret { background: #e5f2fb; color: #0b6fa8; }
+        .vm .empty { color: #9ca3af; font-size: .9rem; }
+        .vm .cluster { border-radius: 50%; background: #17a2e0; color: #fff; font-weight: 700; display: grid; place-items: center; border: 3px solid rgba(255,255,255,.85); box-shadow: 0 0 0 4px rgba(23,162,224,.3); }
+        .vm .cluster.gps { background: #e91e8c; box-shadow: 0 0 0 4px rgba(233,30,140,.3); }
+        .vm .pop-list { max-height: 220px; overflow: auto; margin: .3rem 0 0; padding: 0; list-style: none; }
+        .vm .pop-list li { display: flex; justify-content: space-between; gap: 1rem; padding: .15rem 0; }
+    </style>
+}
+
+<div class="vm">
+    <div class="row align-items-start">
+        <div class="col-md-6">
+            <p class="sub">Every visitor to jibladental.com, located by IP address.</p>
+        </div>
+        <div class="col-md-6">
+            <div class="filters">
+                <select id="range" class="pill">
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="week">This Week</option>
+                    <option value="month" selected>This Month</option>
+                    <option value="lastmonth">Last Month</option>
+                    <option value="3months">Last 3 Months</option>
+                    <option value="year">This Year</option>
+                    <option value="all">All Time</option>
+                </select>
+                <select id="hfrom" class="pill" title="From hour"></select>
+                <select id="hto" class="pill" title="To hour"></select>
+            </div>
+        </div>
+    </div>
+
+    <div id="status" class="empty mb-2">Loading…</div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-6 col-xl-3"><div class="cardx stat"><div class="ic" style="background:#e7f6fd;color:#17a2e0"><i class="mdi mdi-earth"></i></div><div><div class="num" id="sTotal">0</div><div class="lbl">Total Visits</div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="cardx stat"><div class="ic" style="background:#fde4f1;color:#e91e8c"><i class="mdi mdi-account-multiple"></i></div><div><div class="num" id="sUnique">0</div><div class="lbl">Unique Visitors</div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="cardx stat"><div class="ic" style="background:#fdeee0;color:#f5a142"><i class="mdi mdi-account-plus"></i></div><div><div class="num" id="sNew">0</div><div class="lbl">New Visitors</div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="cardx stat"><div class="ic" style="background:#e5f2fb;color:#0b6fa8"><i class="mdi mdi-repeat"></i></div><div><div class="num" id="sRet">0</div><div class="lbl">Returning</div></div></div></div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-lg-4"><div class="cardx"><h6>Top Sources</h6><div id="bSources"></div></div></div>
+        <div class="col-lg-4"><div class="cardx"><h6>Browsers</h6><div id="bBrowsers"></div></div></div>
+        <div class="col-lg-4"><div class="cardx"><h6>Devices</h6><div id="bDevices"></div></div></div>
+    </div>
+
+    <div class="cardx mb-3"><h6>Top Countries</h6><div id="bCountries"></div></div>
+
+    <div class="cardx mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Interactive Map</h6>
+            <div class="legend">
+                <span><span class="dot" style="background:#17a2e0"></span>Visits (IP)</span>
+                <span><span class="dot" style="background:#e91e8c"></span>Exact GPS</span>
+            </div>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <div class="cardx mb-3">
+        <h6>All Visits <span id="tCount" class="fw-normal text-muted"></span></h6>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>Location</th><th>Device</th><th>Source</th><th>Page</th><th>Type</th><th class="text-end">Time</th></tr></thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+        <div class="text-center mt-3"><button id="more" type="button" class="pill d-none">Show more</button></div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+    <script type="module" src="~/Scripts/Page/admin-visits.js" asp-append-version="true"></script>
+}

@@ -25,6 +25,13 @@ public class AdminController : Controller
     }
 
 
+    [HttpGet("/admin/visits")]
+    public IActionResult Visits()
+    {
+        return View();
+    }
+
+
     [HttpGet("/admin/account")]
     public async Task<IActionResult> Get()
     {
